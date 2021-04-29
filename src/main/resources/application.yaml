@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+Person:
+  name: zhangsan
+  age: 11
+  happy: true
+  birth: 2020/02/02
+  maps: {k1: v1,k2: v2}
+  lists:
+    - code
+    - music
+    - dance
+  Dog:
+    name: xiaobai
+    age: 5
+
+
+
+# 可以存对象
+#Student:
+#  name: zhangsan
+#  age: 24
+#
+#student: {name: zhangsan,age: 24}
+#
+## 存数组
+#pets:
+#  - dogs
+#  - cats
+#  - ducks
+#
+#Pets: [dogs,cats,ducks]
+

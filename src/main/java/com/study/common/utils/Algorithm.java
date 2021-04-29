@@ -1,4 +1,4 @@
-package com.study.utils;
+package com.study.common.utils;
 
 /**
  * 力扣算法学习
