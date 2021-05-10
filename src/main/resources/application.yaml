@@ -1,9 +1,9 @@
 server:
   port: 8080
 
-Person:
-  name: zhangsan
-  age: 11
+person:
+  name: ${random.uuid}
+  age: ${random.int}
   happy: true
   birth: 2020/02/02
   maps: {k1: v1,k2: v2}
@@ -12,7 +12,7 @@ Person:
     - music
     - dance
   Dog:
-    name: xiaobai
+    name: ${person.hello:默认值}_旺财
     age: 5
 
 

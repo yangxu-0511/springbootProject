@@ -101,6 +101,15 @@ public class HelloController {
                 .filter(Dish::isVegetarian)
                 .collect(toList());
 
+
+        //获取所有Dish name品种
+        List<String> names = menu.stream()
+                .map((m) -> m.getName())
+                .distinct()
+                .collect(toList());
+
+        names.forEach(System.out::println);
+
         vegetarianList.forEach(System.out::println);
 
     }

@@ -8,10 +8,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class ApplicationTest {
     @Autowired
-    Person person;
+    private Person person;
 
     @Test
     public void testProperties(){
-        System.out.println(person.getName());
+        System.out.println(person);
+
     }
 }
