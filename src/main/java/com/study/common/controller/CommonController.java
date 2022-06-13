@@ -8,4 +8,13 @@ package com.study.common.controller;
 
 public class CommonController
 {
+
+
+    public static void main(String[] args) {
+        System.out.println("test");
+    }
+
+
+
+
 }
