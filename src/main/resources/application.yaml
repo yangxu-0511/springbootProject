@@ -15,6 +15,24 @@ person:
     name: ${person.hello:默认值}_旺财
     age: 5
 
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    # 生产组名
+    group: myGroup
+    # 消息发送超时时间
+    send-message-timeout: 3000
+    # 消息体阈值,4k以上会压缩
+    compress-message-body-threshold: 4096
+    # 在同步模式下发送失败之前在内部执行的最大重试次数。
+    retry-times-when-send-failed: 3
+    # 在异步模式下发送失败之前在内部执行的最大重试次数。
+    retry-times-when-send-async-failed: 3
+    # 消息阈值，最大4MB，在 4KB 之内性能最佳
+    max-message-size: 4096
+
+
+
 
 
 # 可以存对象

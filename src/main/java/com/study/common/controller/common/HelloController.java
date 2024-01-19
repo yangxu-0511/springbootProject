@@ -1,6 +1,5 @@
-package com.study.common.controller;
+package com.study.common.controller.common;
 
-import com.study.common.model.Dish;
 import com.study.common.model.TestModel;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,7 +11,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -32,7 +30,6 @@ public class HelloController {
 
         //Lambda 表达式
         // File[] hiddenFiles = new File(".").listFiles(File::isHidden);
-
 
         Runnable r1 = () -> System.out.println("Hello World 1");
         Consumer<String> stringConsumer = (String s) -> System.out.println(s);
@@ -69,48 +66,6 @@ public class HelloController {
                                   .map((n) -> n*n)
                                   .collect(toList());
         numbers2.forEach(System.out::println);
-
-
-
-
-
-
-
-
-
-        testStreamApi();
-    }
-
-
-
-    public static void testStreamApi(){
-        List<Dish> menu = Arrays.asList(
-                new Dish("pork", false, 800, Dish.Type.MEAT),
-                new Dish("beef", false, 700, Dish.Type.MEAT),
-                new Dish("chicken", false, 400, Dish.Type.MEAT),
-                new Dish("french fries", true, 530, Dish.Type.OTHER),
-                new Dish("rice", true, 350, Dish.Type.OTHER),
-                new Dish("season fruit", true, 120, Dish.Type.OTHER),
-                new Dish("pizza", true, 550, Dish.Type.OTHER),
-                new Dish("prawns", false, 300, Dish.Type.FISH),
-                new Dish("salmon", false, 450, Dish.Type.FISH) );
-
-
-        List<Dish> vegetarianList =
-        menu.stream()
-                .filter(Dish::isVegetarian)
-                .collect(toList());
-
-
-        //获取所有Dish name品种
-        List<String> names = menu.stream()
-                .map((m) -> m.getName())
-                .distinct()
-                .collect(toList());
-
-        names.forEach(System.out::println);
-
-        vegetarianList.forEach(System.out::println);
 
     }
 
