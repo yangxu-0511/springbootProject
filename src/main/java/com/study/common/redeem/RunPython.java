@@ -1,16 +1,17 @@
 package com.study.common.redeem;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class RunPython {
 
-	private static String pythonScriptPath = "D:\\workspace\\DreamNumer\\zj.py";
-	private static String pythonexe = "C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0\\python3.10.exe";
+	private static final String pythonScriptPath = "D:\\workspace\\DreamNumer\\zj.py";
+	private static final String pythonexe = "C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0\\python3.10.exe";
+    private static final String hisFilePath = "D:\\项目\\其他\\history.json";
 
 	/*
 	 * @Author yangxu
@@ -22,6 +23,30 @@ public class RunPython {
 	 */
 	public static void run() {
         try {
+            //判断今天有没有执行过Python
+            //判断号码是否存在
+            File file = new File(hisFilePath);
+
+            String date = new DreamNumer().getCurrentDate();
+            // 创建JSON对象并设置键值对
+            JSONObject jsonObject = new JSONObject();
+            if(file.exists()) { //文件已经存在就取出来然后重新写入
+                jsonObject = new DreamNumer().filterJson(hisFilePath);
+                boolean flag =jsonObject.getBoolean(date);
+                if(flag){
+                    System.out.println("今天已经执行过python脚本了……");
+                    return ;
+                }
+            }
+            jsonObject.put(date,true);
+            // 创建 FileWriter 对象
+            FileWriter fileWriter = new FileWriter(hisFilePath);
+            // 将 JSON 对象写入文件
+            fileWriter.write(jsonObject.toJSONString());
+            // 关闭 FileWriter
+            fileWriter.close();
+            System.out.println("开始启动python脚本...");
+
             // 创建 ProcessBuilder 对象，设置要执行的命令
             List<String> commandList = new ArrayList<>();
             commandList.add(pythonexe);
