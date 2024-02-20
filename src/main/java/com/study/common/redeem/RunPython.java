@@ -9,9 +9,9 @@ import java.util.List;
 
 public class RunPython {
 
-	private static final String pythonScriptPath = "D:\\workspace\\DreamNumer\\zj.py";
+	private static final String pythonScriptPath = "D:\\idea-workspace\\springbootProject\\zj.py";
 	private static final String pythonexe = "C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0\\python3.10.exe";
-    private static final String hisFilePath = "D:\\项目\\其他\\history.json";
+    private static final String ifRunPath = "D:\\项目\\其他\\runPython.json";
 
 	/*
 	 * @Author yangxu
@@ -24,23 +24,21 @@ public class RunPython {
 	public static void run() {
         try {
             //判断今天有没有执行过Python
-            //判断号码是否存在
-            File file = new File(hisFilePath);
-
+            File file = new File(ifRunPath);
             String date = new DreamNumer().getCurrentDate();
             // 创建JSON对象并设置键值对
             JSONObject jsonObject = new JSONObject();
             if(file.exists()) { //文件已经存在就取出来然后重新写入
-                jsonObject = new DreamNumer().filterJson(hisFilePath);
+                jsonObject = new DreamNumer().filterJson(ifRunPath);
                 boolean flag =jsonObject.getBoolean(date);
                 if(flag){
-                    System.out.println("今天已经执行过python脚本了……");
+                    System.out.println("今天已经执行过python脚本了不再执行脚本。");
                     return ;
                 }
             }
             jsonObject.put(date,true);
             // 创建 FileWriter 对象
-            FileWriter fileWriter = new FileWriter(hisFilePath);
+            FileWriter fileWriter = new FileWriter(ifRunPath);
             // 将 JSON 对象写入文件
             fileWriter.write(jsonObject.toJSONString());
             // 关闭 FileWriter

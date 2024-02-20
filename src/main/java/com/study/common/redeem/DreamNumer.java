@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class DreamNumer {
@@ -21,9 +22,12 @@ public class DreamNumer {
 	private static final Set <Integer> redSet = new HashSet<>();
 	private static final Set <Integer> blueSet = new HashSet<>();
 	private static final String hisFilePath = "D:\\项目\\其他\\history.json";
-	private static final String tcFilePath = "D:\\workspace\\DreamNumer\\dlt.json";
-	private static final String fcFilePath = "D:\\workspace\\DreamNumer\\ssq.json";
+	private static final String tcFilePath = "D:\\idea-workspace\\springbootProject\\dlt.json";
+	private static final String fcFilePath = "D:\\idea-workspace\\springbootProject\\ssq.json";
 	private static final int similarSize = 5; //定义相似度个数
+	private static final int sameSize = 3; //定义兑奖相似个数
+
+
 
 	public static void getDreamNum() {
 		//1-35 1-12 1 3 6 5+2 大乐透
@@ -308,30 +312,6 @@ public class DreamNumer {
         }
     }
 
-
-
-	/**
-	 * @Author yangxu
-	 * @Description 将指定的字符串转换为指定格式的字符串: 将空格替换成|
-	 * @Param: [input]
-	 * @Return: java.lang.String
-	 * @Since create in 2024/1/30 13:54
-	 * @Company 广州云趣信息科技有限公司
-	 */
-    public static String convertToFormattedString(String input) {
-    	StringBuilder formattedString = new StringBuilder();
-	    String[] numbers = input.split(" ");
-	    for (String number : numbers) {
-	        int num = Integer.parseInt(number);
-	        formattedString.append(String.format("%02d ", num));
-	    }
-	    input = formattedString.deleteCharAt(formattedString.length() - 1).toString(); // 删除最后一个空格
-        // 使用正则表达式替换数字和空格为指定的格式
-        return input.replaceAll("(\\d+)(\\s+)?", "$1|")
-        .replaceAll("\\|$", "");
-    }
-
-
 	/**
 	 * @Author yangxu
 	 * @Description 解析json数据
@@ -415,6 +395,9 @@ public class DreamNumer {
 	}
 
 
+	public static void main(String[] args) {
+		redeem(null);
+	}
 	/**
 	 * @Author yangxu
 	 * @Description 号码比对 默认T-1
@@ -430,14 +413,12 @@ public class DreamNumer {
 		String date = getYesterdayDate(); //昨天的日期
 		Calendar calendar=Calendar.getInstance();
 		String filePath =  "";
-		int currentDay = calendar.get(Calendar.DAY_OF_WEEK)-2;// T-1 昨天的开奖类型
-		if(currentDay==1  || currentDay==3 || currentDay==5 || currentDay==6) {
-			tcDays();
-			filePath = tcFilePath;
+		int currentDay = calendar.get(Calendar.DAY_OF_WEEK)-1;
+		if(currentDay==1  || currentDay==3 || currentDay==5 || currentDay==6) { //T-1 要换一下体彩福彩顺序
+			filePath = fcFilePath;
 		}
 		if(currentDay==2  || currentDay==4 || currentDay==0) {
-			fcDays();
-			filePath = fcFilePath;
+			filePath = tcFilePath;
 		}
 		//1.取出昨天的出奖号码
 		String openNumber = filterJson(filePath).getString(date);//
@@ -449,8 +430,18 @@ public class DreamNumer {
 			}
 			openNumber = tmpNumber;
 		}
-		if(StrUtil.isEmpty(params)){
+		if(StrUtil.isEmpty(params)){ //
 			//自动兑奖
+			//1.获取昨天的号码
+			JSONObject hisJson = filterJson(hisFilePath);
+			String yesterdayNum  = hisJson.getString(date); // "07,12,20,21,31 06,12|04,06,14,29,34 01,09"
+			if(StrUtil.isEmpty(yesterdayNum)){
+				System.out.println("未获取到昨天的中奖号，开始对比历史购入号码……");
+			}else{
+
+
+
+			}
 
 
 		}else{
