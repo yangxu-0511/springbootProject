@@ -10,7 +10,7 @@ public class Redeem {
 		getToday();
 		//每天执行一次脚本
 		//获取号码
-//		action("2","tc");
+//		action("2","fc");
 		//自动兑奖
 //		action("3","");
 		//手动兑奖 传号码

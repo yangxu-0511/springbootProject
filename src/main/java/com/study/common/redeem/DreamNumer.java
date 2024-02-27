@@ -37,6 +37,8 @@ public class DreamNumer {
 	}
 
 	public static void getDreamNum(String zjType) {
+		redSet.clear();
+		blueSet.clear();
 		if(StrUtil.isNotEmpty(zjType)){
 			if("tc".equals(zjType)) {
 				tcDays();
@@ -159,14 +161,11 @@ public class DreamNumer {
 				String input = scanner.nextLine();
 				if ("no".equals(input) || "n".equals(input) || "不需要".equals(input)) {
 					System.out.println("您输入了no，重新生成号码...");
-					scanner.close();
 					getDreamNum(zjType);
 				} else if ("yes".equals(input) || "y".equals(input)  || "需要".equals(input)) {
 					System.out.println("您输入了yes，不再重新生成号码...");
-					scanner.close();
 				} else {
 					System.out.println("输入无效，请重新输入！");
-					scanner.close();
 				}
 			}
 			//把号码写入历史文件
@@ -176,6 +175,7 @@ public class DreamNumer {
 			System.out.println("系统崩溃了……"+e.getMessage());
 		}
 	}
+
 
 	/**
 	 * @Author yangxu
@@ -344,14 +344,14 @@ public class DreamNumer {
 		while(redSet.size()==5?false:true){
 			int num = ran.nextInt(36); ////1-35 1-12 1 3 6 5+2 大乐透
 			if(num == 0) {
-				num = num+1;
+				continue;
 			}
 			redSet.add(num);
 		}
 		while(blueSet.size()==2?false:true){
 			int num = ran.nextInt(13);
 			if(num == 0) {
-				num = num+1;
+				continue;
 			}
 			blueSet.add(num);
 		}
@@ -365,14 +365,14 @@ public class DreamNumer {
 		while(redSet.size()==6?false:true){//1-33 1-16 2 4 7 6+1 双色球
 			int num = ran.nextInt(34);
 			if(num == 0) {
-				num = num+1;
+				continue;
 			}
 			redSet.add(num);
 		}
 		while(blueSet.size()==1?false:true){
 			int num = ran.nextInt(17);
 			if(num == 0) {
-				num = num+1;
+				continue;
 			}
 			blueSet.add(num);
 		}
@@ -384,6 +384,14 @@ public class DreamNumer {
 		Date currentDate = new Date();
 		return dateFormat.format(currentDate);
 	}
+	/**
+	 * @Author yangxu
+	 * @Description 获取昨天的日期
+	 * @Param:
+	 * @Return: java.lang.String
+	 * @Since create in 2024/2/20 9:11
+	 * @Company 广州云趣信息科技有限公司
+	 */
 	private static String getYesterdayDate() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar calendar = Calendar.getInstance();
@@ -394,13 +402,9 @@ public class DreamNumer {
 		return dateFormat.format(yesterdayDate);
 	}
 
-
-	public static void main(String[] args) {
-		redeem(null);
-	}
 	/**
 	 * @Author yangxu
-	 * @Description 号码比对 默认T-1
+	 * @Description 号码比对 默认T-1 1.自动兑奖 2.手动传参兑奖
 	 * @Param: [params]
 	 * @Return: void
 	 * @Since create in 2024/1/22 13:57
@@ -413,35 +417,31 @@ public class DreamNumer {
 		String date = getYesterdayDate(); //昨天的日期
 		Calendar calendar=Calendar.getInstance();
 		String filePath =  "";
+		String zjType = "";
 		int currentDay = calendar.get(Calendar.DAY_OF_WEEK)-1;
 		if(currentDay==1  || currentDay==3 || currentDay==5 || currentDay==6) { //T-1 要换一下体彩福彩顺序
 			filePath = fcFilePath;
+			zjType = "fc";
 		}
 		if(currentDay==2  || currentDay==4 || currentDay==0) {
 			filePath = tcFilePath;
+			zjType = "tc";
 		}
 		//1.取出昨天的出奖号码
-		String openNumber = filterJson(filePath).getString(date);//
+		String openNumber = filterJson(filePath).getString(date);
 		if(StrUtil.isEmpty(openNumber)){
-			String tmpNumber = filterJson(filePath).getString(date);
-			if(StrUtil.isEmpty(tmpNumber)){
-				System.out.println("未获取到昨天的中奖号，执行失败……");
-				return ;
-			}
-			openNumber = tmpNumber;
+			System.out.println("未获取到昨天的中奖号，执行失败……");
+			return ;
 		}
 		if(StrUtil.isEmpty(params)){ //
 			//自动兑奖
-			//1.获取昨天的号码
+			//1.获取昨天获取的号码
 			JSONObject hisJson = filterJson(hisFilePath);
 			String yesterdayNum  = hisJson.getString(date); // "07,12,20,21,31 06,12|04,06,14,29,34 01,09"
-			if(StrUtil.isEmpty(yesterdayNum)){
-				System.out.println("未获取到昨天的中奖号，开始对比历史购入号码……");
-			}else{
+			if(StrUtil.isNotEmpty(yesterdayNum)){
 
 
-
-			}
+			}else System.out.println("未获取到昨天的中奖号，开始对比历史购入号码……");
 
 
 		}else{

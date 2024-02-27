@@ -30,8 +30,8 @@ public class RunPython {
             JSONObject jsonObject = new JSONObject();
             if(file.exists()) { //文件已经存在就取出来然后重新写入
                 jsonObject = new DreamNumer().filterJson(ifRunPath);
-                boolean flag =jsonObject.getBoolean(date);
-                if(flag){
+                Boolean flag =jsonObject.getBoolean(date);
+                if(flag!=null && flag){
                     System.out.println("今天已经执行过python脚本了不再执行脚本。");
                     return ;
                 }
