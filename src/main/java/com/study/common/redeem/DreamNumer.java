@@ -24,7 +24,7 @@ public class DreamNumer {
 	private static final String hisFilePath = "D:\\项目\\其他\\history.json";
 	private static final String tcFilePath = "D:\\idea-workspace\\springbootProject\\dlt.json";
 	private static final String fcFilePath = "D:\\idea-workspace\\springbootProject\\ssq.json";
-	private static final int similarSize = 5; //定义相似度个数
+	private static final int similarSize = 4; //定义相似度个数
 	private static final int sameSize = 3; //定义兑奖相似个数
 
 
@@ -164,12 +164,12 @@ public class DreamNumer {
 					getDreamNum(zjType);
 				} else if ("yes".equals(input) || "y".equals(input)  || "需要".equals(input)) {
 					System.out.println("您输入了yes，不再重新生成号码...");
+					//把号码写入历史文件
+					writeMyNumber(zjNum);
 				} else {
 					System.out.println("输入无效，请重新输入！");
 				}
 			}
-			//把号码写入历史文件
-			writeMyNumber(zjNum);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("系统崩溃了……"+e.getMessage());
@@ -439,7 +439,6 @@ public class DreamNumer {
 			JSONObject hisJson = filterJson(hisFilePath);
 			String yesterdayNum  = hisJson.getString(date); // "07,12,20,21,31 06,12|04,06,14,29,34 01,09"
 			if(StrUtil.isNotEmpty(yesterdayNum)){
-
 
 			}else System.out.println("未获取到昨天的中奖号，开始对比历史购入号码……");
 
