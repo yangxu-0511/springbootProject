@@ -481,7 +481,7 @@ public class DreamNumer {
 			System.out.println("未获取到昨天的中奖号，执行失败……");
 			return ;
 		}
-
+		System.out.println("开奖奖项是："+("tc".equals(zjType)?"大乐透":"双色球")+"号码为："+openNumber);
 		List<Integer> openRedArr = new ArrayList<>();
 		List<Integer> openBlueArr= new ArrayList<>();
 		if("tc".equals(zjType)){
@@ -572,35 +572,38 @@ public class DreamNumer {
 		List<Integer> his_redArr = new ArrayList<>();
 		List<Integer> his_blueArr = new ArrayList<>();
 		for (String key : hisJson.keySet()) {
-			String hisNum = hisJson.getString(key);
-			if(hisNum.split("\\s")[1].split(",").length==blueSize){ //剔除不满足的号码
-				int redCount = 0;
-				int blueCount = 0;
-				String his_redNum = hisNum.split("\\s")[0];
-				String his_blueNum = hisNum.split("\\s")[1];
-				//获取昨天的号码红蓝球
-				his_redArr = Arrays.stream(his_redNum.split(","))
-						.map(Integer::parseInt)
-						.collect(Collectors.toList());
+			String hisNumStr = hisJson.getString(key);
+			String[] hisNumArr = hisNumStr.split("\\|");
+			for(String hisNum:hisNumArr){
+				if(hisNum.split("\\s")[1].split(",").length==blueSize){ //剔除不满足的号码
+					int redCount = 0;
+					int blueCount = 0;
+					String his_redNum = hisNum.split("\\s")[0];
+					String his_blueNum = hisNum.split("\\s")[1];
+					//获取昨天的号码红蓝球
+					his_redArr = Arrays.stream(his_redNum.split(","))
+							.map(Integer::parseInt)
+							.collect(Collectors.toList());
 
-				his_blueArr = Arrays.stream(his_blueNum.split(","))
-						.map(Integer::parseInt)
-						.collect(Collectors.toList());
+					his_blueArr = Arrays.stream(his_blueNum.split(","))
+							.map(Integer::parseInt)
+							.collect(Collectors.toList());
 
-				for (Integer num : his_redArr) {
-					if (openRedArr.contains(num)) {
-						redCount++;
+					for (Integer num : his_redArr) {
+						if (openRedArr.contains(num)) {
+							redCount++;
+						}
 					}
-				}
-				//redeemSize
-				for (Integer num : his_blueArr) {
-					if (openBlueArr.contains(num)) {
-						blueCount++;
+					//redeemSize
+					for (Integer num : his_blueArr) {
+						if (openBlueArr.contains(num)) {
+							blueCount++;
+						}
 					}
-				}
 
-				if(redCount>=5){ //小奖不统计
-					outReedmInfo(zjType,redCount,blueCount,key,hisNum);
+					if(redCount>=3){ //小奖不统计
+						outReedmInfo(zjType,redCount,blueCount,key,hisNum);
+					}
 				}
 			}
 		}
