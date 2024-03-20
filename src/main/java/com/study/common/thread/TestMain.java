@@ -7,6 +7,9 @@ package com.study.common.thread;/**
 
 import com.study.common.model.Dog;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,37 +19,30 @@ import java.util.stream.Collectors;
  */
 public class TestMain {
     public static void main(String[] args) {
+        String dateStr = "20240317";
+
+        // 使用 DateTimeFormatter 解析日期字符串
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String params = "20240320"; // 假设这是你的日期参数
+        LocalDate localDate = LocalDate.parse(params, formatter);
+        LocalDate previousDay = localDate.minusDays(1);
+        System.out.println("前一天的日期：" + previousDay.format(formatter2));
+
+        String yesNum = "02,12,13,17,26,32 11";
+        String y_redNum = yesNum.split("\\s")[0];
+        String y_blueNum = yesNum.split("\\s")[1];
+        //获取昨天的号码红蓝球
+        List<Integer> y_redArr  = Arrays.stream(y_redNum.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+
+        List<Integer> y_blueArr  = Arrays.stream(y_blueNum.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+
+        y_blueArr.forEach(System.out::println);
 
 
-
-
-
-
-
-
-
-//        String str = "03,12,18,21,29 06 12";
-//        String[] arr = str.split("\\s+");
-//        System.out.println(arr[0]+",=="+arr[1]);
-//
-//        String str2 = "04|05|28|34|35|04|11";
-//
-//        // 从第二个字符串中截取前五个数字
-//        str2 = Arrays.stream(str2.split("\\|"))
-//                .limit(5)
-//                .collect(Collectors.joining("|"));
-//        System.out.println("截取后的字符串为：" + str2);
-//
-//            Scanner scanner = new Scanner(System.in);
-//            System.out.print("请在控制台输入yes或no：");
-//            String input = scanner.nextLine();
-//            if ("yes".equals(input)) {
-//                System.out.println("您输入了yes，执行后续逻辑...");
-//            } else if ("no".equals(input)) {
-//                System.out.println("您输入了no，执行其他逻辑...");
-//            } else {
-//                System.out.println("输入无效，请重新输入！");
-//            }
-//            scanner.close();
     }
 }
