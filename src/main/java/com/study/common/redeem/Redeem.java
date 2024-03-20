@@ -7,14 +7,14 @@ public class Redeem {
 	public static void main(String[] args) {
 
 		//获取每天的号码
-//		getToday();
+		getToday();
 		//每天执行一次脚本
 		//获取号码
 //		action("2","tc");
 		//自动兑奖
 //		action("3","");
 		//指定日期兑奖 例:2023-03-20 这天的开奖日期
-		action("3","2024-01-22");
+//		action("3","2024-01-22");
 
 	}
 
