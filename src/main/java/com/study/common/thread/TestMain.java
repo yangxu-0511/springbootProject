@@ -22,12 +22,10 @@ public class TestMain {
         String dateStr = "20240317";
 
         // 使用 DateTimeFormatter 解析日期字符串
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String params = "20240320"; // 假设这是你的日期参数
-        LocalDate localDate = LocalDate.parse(params, formatter);
-        LocalDate previousDay = localDate.minusDays(1);
-        System.out.println("前一天的日期：" + previousDay.format(formatter2));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse("2024-03-24", formatter);
+        LocalDate previousDay = localDate.minusDays(2);
+        System.out.println(previousDay.format(formatter));
 
         String yesNum = "02,12,13,17,26,32 11";
         String y_redNum = yesNum.split("\\s")[0];

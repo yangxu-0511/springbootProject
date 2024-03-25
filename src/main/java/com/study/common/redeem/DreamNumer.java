@@ -129,11 +129,11 @@ public class DreamNumer {
 				.collect(Collectors.joining("|"));
 		set.clear();
 		set.addAll(blueSet);
-		zjNum = set.stream()
-				.map(num -> {
-					String txt = (num < 10) ? "0" + num : String.valueOf(num);
-					return txt;
-				})
+		zjNum = zjNum +"|"+ set.stream()
+					.map(num -> {
+						String txt = (num < 10) ? "0" + num : String.valueOf(num);
+						return txt;
+					})
 				.collect(Collectors.joining("|"));
 		try {
 		    JSONObject historyData = filterJson(jsonFilePath);
@@ -216,10 +216,16 @@ public class DreamNumer {
 	 */
 	private static List<String> comparisonNum(String zjNum,  String zjType) {
 		String jsonFilePath = "";
+		int redSize = 0;
+		int blueSize = 0;
 		if("tc".equals(zjType)) {
 			jsonFilePath = tcFilePath;
+			redSize = 5;
+			blueSize = 2;
 		}else if("fc".equals(zjType)) {
 			jsonFilePath = fcFilePath;
+			redSize = 6;
+			blueSize = 1;
 		}else {
 			System.out.println("无效类型！");
 			return null;
@@ -235,18 +241,10 @@ public class DreamNumer {
 								.map(Integer::parseInt)
 								.collect(Collectors.toList());
 
-		List<Integer> a_blueArr = new ArrayList<>();
-		if("tc".equals(zjType)){
-			 a_blueArr = Arrays.stream(a_blueNum.split(","))
-					.map(Integer::parseInt)
-					.collect(Collectors.toList());
-		}
-		int redSize = 0;
-		if("tc".equals(zjType)){
-			redSize = 5;
-		}else{
-			redSize = 6;
-		}
+		List<Integer> a_blueArr = Arrays.stream(a_blueNum.split(","))
+				.map(Integer::parseInt)
+				.collect(Collectors.toList());
+
 		//跟所有的公开数据对比
 		for (String key : openData.keySet()) {
 			int count = 0;
@@ -257,32 +255,19 @@ public class DreamNumer {
 			List<Integer> redArr = Arrays.stream(redNum.split("\\|"))
 					.map(Integer::parseInt)
 					.collect(Collectors.toList());
-
-			String blueNum = "";
 			for (Integer num : a_redArr) {
 				if (redArr.contains(num)) {
 					count++;
 				}
 			}
-			if("tc".equals(zjType)){
-				// 从倒数第二个字符串中提取数字
-				blueNum = Arrays.stream(data.split("\\|"))
-						.skip(Math.max(0, data.split("\\|").length - 2))
-						.collect(Collectors.joining("|"));
-				List<Integer> blueArr = Arrays.stream(blueNum.split("\\|"))
-						.map(Integer::parseInt)
-						.collect(Collectors.toList());
-				for (Integer num : a_blueArr) {
-					if (blueArr.contains(num)) {
-						count++;
-					}
-				}
-			}else{
-				// 从倒数第一个字符串中提取数字
-				blueNum = Arrays.stream(data.split("\\|"))
-						.skip(Math.max(0, data.split("\\|").length - 1))
-						.collect(Collectors.joining("|"));
-				if(a_blueNum.equals(blueNum)){
+			String blueNum = Arrays.stream(data.split("\\|"))
+					.skip(Math.max(0, data.split("\\|").length - blueSize))
+					.collect(Collectors.joining("|"));
+			List<Integer> blueArr = Arrays.stream(blueNum.split("\\|"))
+					.map(Integer::parseInt)
+					.collect(Collectors.toList());
+			for (Integer num : a_blueArr) {
+				if (blueArr.contains(num)) {
 					count++;
 				}
 			}
@@ -447,19 +432,23 @@ public class DreamNumer {
 	public static void redeem(String params) {
 		RunPython.run();
 
-		String date = "";
+		String openDate = "";
+		String buyDate = "";
 		String filePath =  "";
 		String zjType = "";
 		int currentDay= -1;
 		int blueSize = -1;
+		int redSize = -1;
 		if(StrUtil.isEmpty(params)){
-			date = getYesterdayDate(); //昨天的日期
+			openDate = getYesterdayDate(); //昨天的日期
+			buyDate = getYesterdayDate(); //昨天的日期
 			// 获取昨天的日期
 			LocalDate yesterday = LocalDate.now().minusDays(1);
 			// 计算昨天是星期几
 			currentDay = yesterday.getDayOfWeek().getValue();
 		}else{
-			date = params;
+			openDate = params;
+			buyDate = params;
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate localDate = LocalDate.parse(params, formatter);
 			currentDay = localDate.getDayOfWeek().getValue();
@@ -469,54 +458,53 @@ public class DreamNumer {
 			filePath = tcFilePath;
 			zjType = "tc";
 			blueSize = 2;
+			redSize = 5;
+			if(currentDay == 6){ //获取周五的购彩
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				LocalDate localDate = LocalDate.parse(buyDate, formatter);
+				LocalDate previousDay = localDate.minusDays(1);
+				buyDate = previousDay.format(formatter);
+			}
 		}
 		if(currentDay==2  || currentDay==4 || currentDay==0 || currentDay==7) {
 			filePath = fcFilePath;
 			zjType = "fc";
 			blueSize = 1;
+			redSize = 6;
+
+			if(currentDay == 7){ //获取周五的购彩
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				LocalDate localDate = LocalDate.parse(buyDate, formatter);
+				LocalDate previousDay = localDate.minusDays(2);
+				buyDate = previousDay.format(formatter);
+			}
+
+
 		}
 		//1.取出昨天的出奖号码
-		String openNumber = filterJson(filePath).getString(date);
+		String openNumber = filterJson(filePath).getString(openDate);
 		if(StrUtil.isEmpty(openNumber)){
 			System.out.println("未获取到昨天的中奖号，执行失败……");
 			return ;
 		}
 		System.out.println("开奖奖项是："+("tc".equals(zjType)?"大乐透":"双色球")+"号码为："+openNumber);
-		List<Integer> openRedArr = new ArrayList<>();
-		List<Integer> openBlueArr= new ArrayList<>();
-		if("tc".equals(zjType)){
-			String redNum = Arrays.stream(openNumber.split("\\|"))
-					.limit(5)
-					.collect(Collectors.joining("|"));
-			openRedArr = Arrays.stream(redNum.split("\\|"))
-					.map(Integer::parseInt)
-					.collect(Collectors.toList());
+		String redNum = Arrays.stream(openNumber.split("\\|"))
+				.limit(redSize)
+				.collect(Collectors.joining("|"));
+		List<Integer> openRedArr  = Arrays.stream(redNum.split("\\|"))
+				.map(Integer::parseInt)
+				.collect(Collectors.toList());
 
-			String blueNum = Arrays.stream(openNumber.split("\\|"))
-					.skip(Math.max(0, openNumber.split("\\|").length - 2))
-					.collect(Collectors.joining("|"));
-			openBlueArr = Arrays.stream(blueNum.split("\\|"))
-					.map(Integer::parseInt)
-					.collect(Collectors.toList());
-		}else{
-			String redNum = Arrays.stream(openNumber.split("\\|"))
-					.limit(6)
-					.collect(Collectors.joining("|"));
-			openRedArr = Arrays.stream(redNum.split("\\|"))
-					.map(Integer::parseInt)
-					.collect(Collectors.toList());
-
-			String blueNum = Arrays.stream(openNumber.split("\\|"))
-					.skip(Math.max(0, openNumber.split("\\|").length - 1))
-					.collect(Collectors.joining("|"));
-			openBlueArr = Arrays.stream(blueNum.split("\\|"))
-					.map(Integer::parseInt)
-					.collect(Collectors.toList());
-		}
+		String blueNum = Arrays.stream(openNumber.split("\\|"))
+				.skip(Math.max(0, openNumber.split("\\|").length - blueSize))
+				.collect(Collectors.joining("|"));
+		List<Integer> openBlueArr  = Arrays.stream(blueNum.split("\\|"))
+				.map(Integer::parseInt)
+				.collect(Collectors.toList());
 		//自动兑奖
 		//1.获取昨天获取的号码
 		JSONObject hisJson = filterJson(hisFilePath);
-		String yesterdayNum  = hisJson.getString(date); // "02,12,13,17,26,32 11|07,12,20,21,31 06,12|04,06,14,29,34 01,09"
+		String yesterdayNum  = hisJson.getString(buyDate); // "02,12,13,17,26,32 11|07,12,20,21,31 06,12|04,06,14,29,34 01,09"
 		if(StrUtil.isNotEmpty(yesterdayNum)){
 			//优先对比昨天的号码昨天
 			System.out.println("开始对比当天购买的号码……");
@@ -601,7 +589,7 @@ public class DreamNumer {
 						}
 					}
 
-					if(redCount>=3){ //小奖不统计
+					if(redCount>=5){ //小奖不统计
 						outReedmInfo(zjType,redCount,blueCount,key,hisNum);
 					}
 				}
