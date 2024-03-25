@@ -22,9 +22,9 @@ public class DreamNumer {
 	private static final Random ran = new Random();
 	private static final Set <Integer> redSet = new HashSet<>();
 	private static final Set <Integer> blueSet = new HashSet<>();
-	private static final String hisFilePath = "D:\\项目\\其他\\history.json";
-	private static final String tcFilePath = "D:\\idea-workspace\\springbootProject\\dlt.json";
-	private static final String fcFilePath = "D:\\idea-workspace\\springbootProject\\ssq.json";
+	private static final String hisFilePath = "D:\\idea-workspace\\springbootProject\\history.json";
+	private static final String tcFilePath  = "D:\\idea-workspace\\springbootProject\\dlt.json";
+	private static final String fcFilePath  = "D:\\idea-workspace\\springbootProject\\ssq.json";
 	private static final int similarSize = 5; //定义相似度个数
 	private static Map<String, String> tcMap = new HashMap<>();
 	private static Map<String, String> fcMap = new HashMap<>();
