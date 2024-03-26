@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.common.utils.DateUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -40,6 +41,7 @@ public class DreamNumer {
 		tcMap.put("2-2", "恭喜中了八等奖 买一张彩票吧！奖金=15");
 		tcMap.put("3-0", "恭喜中了九等奖 买一张彩票吧！奖金=5");
 		tcMap.put("1-2", "恭喜中了九等奖 买一张彩票吧！奖金=5");
+		tcMap.put("2-1", "恭喜中了九等奖 买一张彩票吧！奖金=5");
 		tcMap.put("0-2", "恭喜中了九等奖 买一张彩票吧！奖金=5");
 
 		fcMap.put("6-1", "恭喜你成为百万富翁……历史性的一刻！！！中奖金额>=500万");
@@ -293,9 +295,9 @@ public class DreamNumer {
 	public static void writeMyNumber(String number,int type) {
     	String date = "";
     	if(type==2) {
-    		date = getYesterdayDate();
+    		date = DateUtils.getYesterdayDate();
     	}else {
-    		date = getCurrentDate();
+    		date = DateUtils.getCurrentDate();
     	}
 		//判断号码是否存在
 		File file = new File(hisFilePath);
@@ -397,29 +399,6 @@ public class DreamNumer {
 		}
 	}
 
-	// 获取当前日期并格式化为 "yyyy-MM-dd" 格式
-	static String getCurrentDate() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date currentDate = new Date();
-		return dateFormat.format(currentDate);
-	}
-	/**
-	 * @Author yangxu
-	 * @Description 获取昨天的日期
-	 * @Param:
-	 * @Return: java.lang.String
-	 * @Since create in 2024/2/20 9:11
-	 * @Company 广州云趣信息科技有限公司
-	 */
-	private static String getYesterdayDate() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Calendar calendar = Calendar.getInstance();
-		Date currentDate = new Date();
-		calendar.setTime(currentDate);
-		calendar.add(Calendar.DAY_OF_YEAR, -1);
-		Date yesterdayDate = calendar.getTime();
-		return dateFormat.format(yesterdayDate);
-	}
 
 	/**
 	 * @Author yangxu
@@ -440,8 +419,8 @@ public class DreamNumer {
 		int blueSize = -1;
 		int redSize = -1;
 		if(StrUtil.isEmpty(params)){
-			openDate = getYesterdayDate(); //昨天的日期
-			buyDate = getYesterdayDate(); //昨天的日期
+			openDate = DateUtils.getYesterdayDate(); //昨天的日期
+			buyDate = DateUtils.getYesterdayDate(); //昨天的日期
 			// 获取昨天的日期
 			LocalDate yesterday = LocalDate.now().minusDays(1);
 			// 计算昨天是星期几

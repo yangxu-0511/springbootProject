@@ -1,6 +1,7 @@
 package com.study.common.redeem;
-import cn.hutool.core.util.StrUtil;
+
 import com.alibaba.fastjson.JSONObject;
+import com.study.common.utils.DateUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class RunPython {
         try {
             //判断今天有没有执行过Python
             File file = new File(ifRunPath);
-            String date = new DreamNumer().getCurrentDate();
+            String date = DateUtils.getCurrentDate();
             // 创建JSON对象并设置键值对
             JSONObject jsonObject = new JSONObject();
             if(file.exists()) { //文件已经存在就取出来然后重新写入
