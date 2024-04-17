@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -27,6 +26,8 @@ public class DreamNumer {
 	private static final String tcFilePath  = "D:\\idea-workspace\\springbootProject\\dlt.json";
 	private static final String fcFilePath  = "D:\\idea-workspace\\springbootProject\\ssq.json";
 	private static final int similarSize = 5; //定义相似度个数
+	private static final int sameRedSize = 5; //定义红球命中个数
+	private static final int sameHisSize = 3; //历史命中数
 	private static Map<String, String> tcMap = new HashMap<>();
 	private static Map<String, String> fcMap = new HashMap<>();
 	static {
@@ -35,25 +36,25 @@ public class DreamNumer {
 		tcMap.put("5-0", "恭喜中了三等奖 一笔可观的意外之财! 奖金=1万");
 		tcMap.put("4-2", "恭喜中了四等奖 一个月生活费！奖金=3000");
 		tcMap.put("4-1", "恭喜中了五等奖 买一版刮刮乐吧！奖金=300");
-		tcMap.put("3-2", "恭喜中了六等奖 买四张彩票吧！奖金=200");
-		tcMap.put("4-0", "恭喜中了七等奖 买两张彩票吧！奖金=100");
-		tcMap.put("3-1", "恭喜中了八等奖 买一张彩票吧！奖金=15");
-		tcMap.put("2-2", "恭喜中了八等奖 买一张彩票吧！奖金=15");
-		tcMap.put("3-0", "恭喜中了九等奖 买一张彩票吧！奖金=5");
-		tcMap.put("1-2", "恭喜中了九等奖 买一张彩票吧！奖金=5");
-		tcMap.put("2-1", "恭喜中了九等奖 买一张彩票吧！奖金=5");
-		tcMap.put("0-2", "恭喜中了九等奖 买一张彩票吧！奖金=5");
+		tcMap.put("3-2", "恭喜中了六等奖 买四张刮刮乐吧！奖金=200");
+		tcMap.put("4-0", "恭喜中了七等奖 买两张刮刮乐吧！奖金=100");
+		tcMap.put("3-1", "恭喜中了八等奖 买一张刮刮乐吧！奖金=15");
+		tcMap.put("2-2", "恭喜中了八等奖 买一张刮刮乐吧！奖金=15");
+		tcMap.put("3-0", "恭喜中了九等奖 买一张刮刮乐吧！奖金=5");
+		tcMap.put("1-2", "恭喜中了九等奖 买一张刮刮乐吧！奖金=5");
+		tcMap.put("2-1", "恭喜中了九等奖 买一张刮刮乐吧！奖金=5");
+		tcMap.put("0-2", "恭喜中了九等奖 买一张刮刮乐吧！奖金=5");
 
 		fcMap.put("6-1", "恭喜你成为百万富翁……历史性的一刻！！！中奖金额>=500万");
 		fcMap.put("6-0", "恭喜中了二等奖 卸下了很大一部分负担！预计奖金30万");
 		fcMap.put("5-1", "恭喜中了三等奖 一笔可观的意外之财! 奖金=1万");
-		fcMap.put("5-0", "恭喜中了四等奖 买四张彩票吧！奖金=200");
-		fcMap.put("4-1", "恭喜中了四等奖 买四张彩票吧！奖金=200");
-		fcMap.put("4-0", "恭喜中了五等奖 买一张彩票吧！奖金=10");
-		fcMap.put("3-1", "恭喜中了五等奖 买一张彩票吧！奖金=10");
-		fcMap.put("2-1", "恭喜中了六等奖 买一张彩票吧！奖金=5");
-		fcMap.put("1-1", "恭喜中了六等奖 买一张彩票吧！奖金=5");
-		fcMap.put("0-1", "恭喜中了六等奖 买一张彩票吧！奖金=5");
+		fcMap.put("5-0", "恭喜中了四等奖 买四张刮刮乐吧！奖金=200");
+		fcMap.put("4-1", "恭喜中了四等奖 买四张刮刮乐吧！奖金=200");
+		fcMap.put("4-0", "恭喜中了五等奖 买一张刮刮乐吧！奖金=10");
+		fcMap.put("3-1", "恭喜中了五等奖 买一张刮刮乐吧！奖金=10");
+		fcMap.put("2-1", "恭喜中了六等奖 买一张刮刮乐吧！奖金=5");
+		fcMap.put("1-1", "恭喜中了六等奖 买一张刮刮乐吧！奖金=5");
+		fcMap.put("0-1", "恭喜中了六等奖 买一张刮刮乐吧！奖金=5");
 	}
 
 
@@ -280,6 +281,55 @@ public class DreamNumer {
 		return similarNumber;
 	}
 
+
+	/**
+	 * @Author yangxu
+	 * @Description 统计开奖号码历史重复数
+	 * @Param: [redArr, blueArr, redSize, blueSize,openData]
+	 * @Return: void
+	 * @Since create in 2024/4/15 15:42
+	 * @Company 广州云趣信息科技有限公司
+	 */
+	public static void comparisonOpenNum(List<Integer> redArr, List<Integer> blueArr, int redSize, int blueSize, JSONObject openData) {
+		//跟所有的公开数据对比
+		for (String key : openData.keySet()) {
+			String openNumber = openData.getString(key);
+			int redCount = 0;
+			int blueCount = 0;
+			String redNum = Arrays.stream(openNumber.split("\\|"))
+					.limit(redSize)
+					.collect(Collectors.joining("|"));
+			List<Integer> openRedArr  = Arrays.stream(redNum.split("\\|"))
+					.map(Integer::parseInt)
+					.collect(Collectors.toList());
+
+			String blueNum = Arrays.stream(openNumber.split("\\|"))
+					.skip(Math.max(0, openNumber.split("\\|").length - blueSize))
+					.collect(Collectors.joining("|"));
+			List<Integer> openBlueArr  = Arrays.stream(blueNum.split("\\|"))
+					.map(Integer::parseInt)
+					.collect(Collectors.toList());
+			for (Integer num : openRedArr) {
+				if (redArr.contains(num)) {
+					redCount++;
+				}
+			}
+			for (Integer num : openBlueArr) {
+				if (blueArr.contains(num)) {
+					blueCount++;
+				}
+			}
+			if(redCount+blueCount == 7){
+				continue;
+			}
+			if(redCount+blueCount > sameHisSize){
+				System.out.println("该号码在历史中奖信息中总重复数为:"+(redCount+blueCount)+" 其中重复"+redCount+"个红球和"+blueCount+"个蓝球---->"+openNumber);
+			}
+		}
+	}
+
+
+
 	public static void writeMyNumber(String number) {
 		writeMyNumber(number,1);
     }
@@ -461,13 +511,14 @@ public class DreamNumer {
 
 		}
 		//1.取出昨天的出奖号码
-		String openNumber = filterJson(filePath).getString(openDate);
+		JSONObject openData =  filterJson(filePath);
+		String openNumber = openData.getString(openDate);
 		if(StrUtil.isEmpty(openNumber)){
 			System.out.println("未获取到昨天的中奖号，执行失败……");
 			return ;
 		}
 		System.out.println("开奖奖项是："+("tc".equals(zjType)?"大乐透":"双色球")+"号码为："+openNumber);
-		String redNum = Arrays.stream(openNumber.split("\\|"))
+			String redNum = Arrays.stream(openNumber.split("\\|"))
 				.limit(redSize)
 				.collect(Collectors.joining("|"));
 		List<Integer> openRedArr  = Arrays.stream(redNum.split("\\|"))
@@ -486,7 +537,7 @@ public class DreamNumer {
 		String yesterdayNum  = hisJson.getString(buyDate); // "02,12,13,17,26,32 11|07,12,20,21,31 06,12|04,06,14,29,34 01,09"
 		if(StrUtil.isNotEmpty(yesterdayNum)){
 			//优先对比昨天的号码昨天
-			System.out.println("开始对比当天购买的号码……");
+			System.out.println("开始对比当天购买的号码---->start");
 			String[] yesterdayNumsArr = yesterdayNum.split("\\|");
 			List<Integer> y_redArr = new ArrayList<>();
 			List<Integer> y_blueArr = new ArrayList<>();
@@ -520,22 +571,19 @@ public class DreamNumer {
 					if("tc".equals(zjType)){
 						if (tcMap.containsKey(key)) {
 							System.out.println(tcMap.get(key));
-						}else{
-							System.out.println("未找到对应奖项");
 						}
 					}else{
 						if (fcMap.containsKey(key)) {
 							System.out.println(fcMap.get(key));
-						}else{
-							System.out.println("未找到对应奖项");
 						}
 					}
 				}
 			}
 		}else{
-			System.out.println("当天尚未购彩……");
+			System.out.println("当天尚未购彩----");
 		}
-		System.out.println("开始统计历史购彩记录有无中奖信息（只统计红球>=5)");
+		System.out.println("当天号码对比结束---->end");
+		System.out.println("开始统计历史购彩记录有无中奖信息（只统计红球>="+sameRedSize+")--->start");
 		List<Integer> his_redArr = new ArrayList<>();
 		List<Integer> his_blueArr = new ArrayList<>();
 		for (String key : hisJson.keySet()) {
@@ -568,16 +616,18 @@ public class DreamNumer {
 						}
 					}
 
-					if(redCount>=5){ //小奖不统计
+					if(redCount>=sameRedSize){ //小奖不统计
 						outReedmInfo(zjType,redCount,blueCount,key,hisNum);
 					}
 				}
 			}
 		}
-
+		System.out.println("历史号码统计结束---->end");
+		//统计开奖号码跟历史开奖号码相似程度
+		System.out.println("统计开奖号码跟历史开奖号码相似程度-->");
+		comparisonOpenNum(openRedArr,openBlueArr,redSize,blueSize,openData);
 
 	}
-
 	/*
 	 * @Author yangxu
 	 * @Description

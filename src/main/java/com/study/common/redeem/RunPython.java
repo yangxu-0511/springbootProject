@@ -12,7 +12,7 @@ public class RunPython {
 
 	private static final String pythonScriptPath = "D:\\idea-workspace\\springbootProject\\zj.py";
 	private static final String pythonexe = "C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0\\python3.10.exe";
-    private static final String ifRunPath = "D:\\项目\\其他\\runPython.json";
+    private static final String ifRunPath = "D:\\idea-workspace\\springbootProject\\runPython.json";
 
 	/*
 	 * @Author yangxu

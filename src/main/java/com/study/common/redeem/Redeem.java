@@ -7,14 +7,16 @@ public class Redeem {
 	public static void main(String[] args) {
 
 		//获取每天的号码
-		getToday();
+//		getToday();
 		//每天执行一次脚本
 		//获取号码
 //		action("2","fc");
 		//自动兑奖
-//		action("3","");
+		action("3","");
 		//指定日期兑奖 例:2024-03-20 这天的开奖日期
-//		action("3","2024-03-23");
+//		action("3","2024-04-13");
+		//写入号码 日期默认为昨天的日期
+//		action("4","15,19,20,23,34 05,10");
 
 	}
 
@@ -39,7 +41,7 @@ public class Redeem {
 			case "3": //兑奖
 				DreamNumer.redeem(params);
 				break;
-			case "4": //兑奖
+			case "4": //写入号码
 				DreamNumer.writeMyNumber(params,2);
 				break;
 			default:

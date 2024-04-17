@@ -1,16 +1,16 @@
-package com.study.common.thread;/**
- * @Author yangx
+package com.study.common.thread;
+
+/*
+  @Author yangx
  * @Description 描述
  * @Since create in
  * @Company 广州云趣信息科技有限公司
  */
 
-import com.study.common.model.Dog;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -19,13 +19,14 @@ import java.util.stream.Collectors;
  */
 public class TestMain {
     public static void main(String[] args) {
-        String dateStr = "20240317";
+
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime newTime = currentTime.plusMinutes(15);
+        System.out.println(newTime.format(formatter));
 
         // 使用 DateTimeFormatter 解析日期字符串
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse("2024-03-24", formatter);
-        LocalDate previousDay = localDate.minusDays(2);
-        System.out.println(previousDay.format(formatter));
 
         String yesNum = "02,12,13,17,26,32 11";
         String y_redNum = yesNum.split("\\s")[0];
@@ -34,6 +35,7 @@ public class TestMain {
         List<Integer> y_redArr  = Arrays.stream(y_redNum.split(","))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
+        y_redArr.forEach(System.out::println);
 
         List<Integer> y_blueArr  = Arrays.stream(y_blueNum.split(","))
                 .map(Integer::parseInt)
