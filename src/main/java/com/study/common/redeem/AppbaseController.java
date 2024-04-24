@@ -2,21 +2,21 @@ package com.study.common.redeem;
 
 import cn.hutool.core.util.StrUtil;
 
-public class Redeem {
+public class AppbaseController {
 
 	public static void main(String[] args) {
 
 		//获取每天的号码
-//		getToday();
+		getToday();
 		//每天执行一次脚本
 		//获取号码
 //		action("2","fc");
-		//自动兑奖
-		action("3","");
-		//指定日期兑奖 例:2024-03-20 这天的开奖日期
+//		自动兑奖
+//		action("3","");
+		//指定日期兑奖 周六=T-2
 //		action("3","2024-04-13");
 		//写入号码 日期默认为昨天的日期
-//		action("4","15,19,20,23,34 05,10");
+//		action("4","07,18,22,25,27,33 09");
 
 	}
 
@@ -39,10 +39,10 @@ public class Redeem {
 				}else DreamNumer.getDreamNum();
 				break;
 			case "3": //兑奖
-				DreamNumer.redeem(params);
+				ReedomNum.redeem(params);
 				break;
 			case "4": //写入号码
-				DreamNumer.writeMyNumber(params,2);
+				WriteNum.writeMyNumber(params,2);
 				break;
 			default:
 				break;
