@@ -33,14 +33,14 @@ public class AppBaseNum {
      */
     public static JSONObject filterJson(String jsonFilePath) {
         Path path = Paths.get(jsonFilePath);
-        byte[] jsonData;
-        try {
-            jsonData = Files.readAllBytes(path);
-            String jsonString = new String(jsonData);
-            // 使用Jackson库解析JSON
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(jsonString);
-            return JSONObject.parseObject(jsonNode.toString());
+            byte[] jsonData;
+            try {
+                jsonData = Files.readAllBytes(path);
+                String jsonString = new String(jsonData);
+                // 使用Jackson库解析JSON
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(jsonString);
+                return JSONObject.parseObject(jsonNode.toString());
         }catch (Exception e) {
             System.out.println("系统崩溃了……"+e.getMessage());
         }

@@ -76,4 +76,48 @@ public class WriteNum extends AppBaseNum {
         }
     }
 
+    /*
+     * @Author yangxu
+     * @Description 启用的号码也保存一下
+     * @Param: [number]
+     * @Return: void
+     * @Since create in 2024/5/14 14:54
+     * @Company 广州云趣信息科技有限公司
+     */
+    public static void writeNotBuyNumber(String number) {
+        String date = DateUtils.getCurrentDate();
+        //判断号码是否存在
+        File file = new File(Constants.getNotBuyPath());
+        // 创建JSON对象并设置键值对
+        JSONObject jsonObject = new JSONObject();
+        if(file.exists()) { //文件已经存在就取出来然后重新写入
+            jsonObject = filterJson(Constants.getNotBuyPath());
+            assert jsonObject != null;
+            String hisNum =jsonObject.getString(date);
+            if(StrUtil.isNotEmpty(hisNum)) {//取出历史号码
+                if(hisNum.contains(number)){
+                    System.out.println("该号码已经存在……");
+                    return;
+                }
+                hisNum = hisNum+"|"+number;
+                jsonObject.put(date, hisNum);
+            }else{
+                jsonObject.put(date, number);
+            }
+        }else{
+            jsonObject.put(date, number);
+        }
+        // 指定 JSON 文件路径
+        try {
+            // 创建 FileWriter 对象
+            FileWriter fileWriter = new FileWriter(Constants.getNotBuyPath());
+            // 将 JSON 对象写入文件
+            fileWriter.write(jsonObject.toJSONString());
+            // 关闭 FileWriter
+            fileWriter.close();
+            System.out.println("号码已成功写入未买号码文件。");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public class Constants {
     private static final String hisFilePath = "D:\\idea-workspace\\springbootProject\\history.json";
+    private static final String notBuyPath = "D:\\idea-workspace\\springbootProject\\notBuy.json";
     private static final String tcFilePath  = "D:\\idea-workspace\\springbootProject\\dlt.json";
     private static final String fcFilePath  = "D:\\idea-workspace\\springbootProject\\ssq.json";
     public static final int similarSize = 5; //定义相似度个数
@@ -63,5 +64,8 @@ public class Constants {
     }
     public static String getFcFilePath() {
         return fcFilePath;
+    }
+    public static String getNotBuyPath() {
+        return notBuyPath;
     }
 }

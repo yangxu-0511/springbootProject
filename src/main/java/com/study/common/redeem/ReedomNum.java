@@ -145,11 +145,11 @@ public class ReedomNum extends AppBaseNum {
                     String key = redCount + "-" + blueCount;
                     if("tc".equals(zjType)){
                         if (Constants.getTcMap().containsKey(key)) {
-                            System.out.println(Constants.getTcMap().get(key));
+                            System.out.println("购买号码："+yesNum +Constants.getTcMap().get(key));
                         }
                     }else{
                         if (Constants.getFcMap().containsKey(key)) {
-                            System.out.println(Constants.getFcMap().get(key));
+                            System.out.println("购买号码："+yesNum+Constants.getFcMap().get(key));
                         }
                     }
                 }

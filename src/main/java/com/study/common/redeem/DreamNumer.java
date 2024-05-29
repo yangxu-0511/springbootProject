@@ -161,6 +161,7 @@ public class DreamNumer extends AppBaseNum {
 				String input = scanner.nextLine();
 				if ("no".equals(input) || "n".equals(input) || "不需要".equals(input)) {
 					System.out.println("您输入了no，重新生成号码...");
+					WriteNum.writeNotBuyNumber(zjNum);
 					getDreamNum(zjType);
 				} else if ("yes".equals(input) || "y".equals(input)  || "需要".equals(input)) {
 					System.out.println("您输入了yes，不再重新生成号码...");

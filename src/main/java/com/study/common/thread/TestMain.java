@@ -7,6 +7,18 @@ package com.study.common.thread;
  * @Company 广州云趣信息科技有限公司
  */
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -18,8 +30,20 @@ import java.util.stream.Collectors;
  *@create 2024/1/16 16:15
  */
 public class TestMain {
-    public static void main(String[] args) {
+    public TestMain() throws IOException {
+    }
 
+    public static void main(String[] args) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("ID","ID");
+        json.put("name","张三");
+        String tt = setSex(json);
+        System.out.println(json.toJSONString());
+
+        String ex = "Unknown error Exception ";
+        if(ex.contains("Exception")){
+            System.out.println("111222");
+        }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime currentTime = LocalDateTime.now();
@@ -44,5 +68,15 @@ public class TestMain {
         y_blueArr.forEach(System.out::println);
 
 
+    }
+
+    private static String setSex(JSONObject json) {
+        json.put("sex","sex");
+        return setSex2(json);
+    }
+
+    private static String setSex2(JSONObject json) {
+        json.put("sex2","sex2");
+        return "你好";
     }
 }
