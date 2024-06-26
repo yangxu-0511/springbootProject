@@ -6,7 +6,6 @@ public class AppbaseController {
 
     public static void main(String[] args) {
 
-        //TODO 奇偶数对比  弃用号码池兑奖
         //获取每天的号码
         getToday();
         //每天执行一次脚本
@@ -15,7 +14,7 @@ public class AppbaseController {
 //		自动兑奖
 //		action("3","");
         //指定日期兑奖 周六=T-2
-//		action("3","2024-04-05");
+//		action("3","2024-06-22");
         //写入号码 日期默认为昨天的日期
 //		action("4","07,18,22,25,27,33 09");
 

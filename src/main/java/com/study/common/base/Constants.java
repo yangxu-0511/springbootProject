@@ -18,7 +18,7 @@ public class Constants {
     private static final String tcFilePath  = "D:\\idea-workspace\\springbootProject\\dlt.json";
     private static final String fcFilePath  = "D:\\idea-workspace\\springbootProject\\ssq.json";
     public static final int similarSize = 5; //定义相似度个数
-    public static final int sameRedSize = 5; //定义红球命中个数
+    public static final int sameRedSize = 4; //定义红球命中个数
     public static final int sameHisSize = 3; //历史命中数
     private static final Map<String, String> tcMap = new HashMap<>();
     private static final Map<String, String> fcMap = new HashMap<>();

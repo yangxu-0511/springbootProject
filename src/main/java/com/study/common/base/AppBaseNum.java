@@ -12,10 +12,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *@author yangxu
@@ -56,8 +55,8 @@ public class AppBaseNum {
      * @Since create in 2024/1/17 14:08
      * @Company 广州云趣信息科技有限公司
      */
-    public static List<String> comparisonNum(List<Integer> a_redArr, List<Integer> a_blueArr, int redSize, int blueSize, JSONObject openData) {
-        List<String > similarNumber = new ArrayList<>();
+    public static Map<Integer,String> comparisonNum(List<Integer> a_redArr, List<Integer> a_blueArr, int redSize, int blueSize, JSONObject openData) {
+        Map<Integer ,String> similarNumber = new HashMap<>();
         //跟所有的公开数据对比
         for (String key : openData.keySet()) {
             int count = 0;
@@ -85,7 +84,7 @@ public class AppBaseNum {
                 }
             }
             if(count>=Constants.similarSize){
-                similarNumber.add(data);
+                similarNumber.put(count,data);
             }
         }
         return similarNumber;
@@ -102,6 +101,7 @@ public class AppBaseNum {
      */
     public static void comparisonOpenNum(List<Integer> redArr, List<Integer> blueArr, int redSize, int blueSize, JSONObject openData) {
         //跟所有的公开数据对比
+        Map<Integer,Integer> tmp = new HashMap<>();
         for (String key : openData.keySet()) {
             String openNumber = openData.getString(key);
             int redCount = 0;
@@ -133,9 +133,20 @@ public class AppBaseNum {
                 continue;
             }
             if(redCount+blueCount > Constants.sameHisSize){
+                int count = redCount+blueCount;
+                Integer num = tmp.get(count);
+                if(num==null){
+                    tmp.put(count,1);
+                }else{
+                    tmp.put(count,num+1);
+                }
                 System.out.println("该号码在历史中奖信息中总重复数为:"+(redCount+blueCount)+" 其中重复"+redCount+"个红球和"+blueCount+"个蓝球---->"+openNumber);
             }
         }
+//        tmp.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.reverseOrder())).forEach(System.out::println);
+        tmp.forEach((k,v)->{
+            System.out.println("该号码在历史中奖信息中对比重复"+k+"个的号码数量"+v+"个");
+        });
     }
 
 

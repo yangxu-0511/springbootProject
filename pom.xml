@@ -88,6 +88,11 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15to18</artifactId>
+            <version>1.66</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.rocketmq</groupId>

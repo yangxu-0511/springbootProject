@@ -7,22 +7,16 @@ package com.study.common.thread;
  * @Company 广州云趣信息科技有限公司
  */
 
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.common.utils.Sm4Util;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,17 +27,29 @@ public class TestMain {
     public TestMain() throws IOException {
     }
 
-    public static void main(String[] args) throws IOException {
-        JSONObject json = new JSONObject();
-        json.put("ID","ID");
-        json.put("name","张三");
-        String tt = setSex(json);
-        System.out.println(json.toJSONString());
+    public static void main(String[] args) throws Exception {
+//        Map<Integer,Integer> tmp = new HashMap<>();
+//        tmp.put(5,2);
+//        tmp.put(6,1);
+//        tmp.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.reverseOrder())).forEach(System.out::println);
 
-        String ex = "Unknown error Exception ";
-        if(ex.contains("Exception")){
-            System.out.println("111222");
-        }
+        String sysReporter = "JT005012,JT00503,JT00502";
+        String reporter = "JT00501";
+        boolean ifExist = Arrays.stream(sysReporter.split(","))
+                .anyMatch(element -> element.equals(reporter));
+        System.out.println("==="+ifExist);
+
+
+        String type = "99010401";
+
+        // 获取字符串的最后一位数字
+        String lastDigit = type.substring(type.length() - 1);
+
+        System.out.println("最后一位数字是: " + lastDigit);
+
+        String[] arr1 = new String[]{"3","4","5"};
+        System.out.println(arr1[0]);
+        System.out.println(arr1[2]);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime currentTime = LocalDateTime.now();
@@ -70,13 +76,21 @@ public class TestMain {
 
     }
 
-    private static String setSex(JSONObject json) {
-        json.put("sex","sex");
-        return setSex2(json);
-    }
+    public static  List<String> generateMonthList(String startDate, String endDate) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
+        List<String> months = new ArrayList<>();
+        Calendar start = Calendar.getInstance();
+        start.setTime(dateFormat.parse(startDate));
+        Calendar end = Calendar.getInstance();
+        end.setTime(dateFormat.parse(endDate));
 
-    private static String setSex2(JSONObject json) {
-        json.put("sex2","sex2");
-        return "你好";
+        while (!start.after(end)) {
+            months.add(dateFormat.format(start.getTime()));
+            start.add(Calendar.MONTH, 1);
+        }
+        for (int i = 0; i < months.size(); i++){
+            System.out.println("月份："+months.get(i));
+        }
+        return months;
     }
 }

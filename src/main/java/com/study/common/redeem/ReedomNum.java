@@ -158,6 +158,53 @@ public class ReedomNum extends AppBaseNum {
             System.out.println("当天尚未购彩----");
         }
         System.out.println("当天号码对比结束---->end");
+
+        JSONObject notBuyJson = filterJson(Constants.getNotBuyPath());
+        String notBuyNum  = notBuyJson.getString(buyDate); // "02,12,13,17,26,32 11|07,12,20,21,31 06,12|04,06,14,29,34 01,09"
+        if(StrUtil.isNotEmpty(notBuyNum)){
+            //优先对比昨天的号码昨天
+            System.out.println("开始对比未购买的号码---->start");
+            String[] notBuyArr = notBuyNum.split("\\|");
+            List<Integer> y_redArr = new ArrayList<>();
+            List<Integer> y_blueArr = new ArrayList<>();
+            for (String nbNum:notBuyArr) {
+                if(nbNum.split("\\s")[1].split(",").length==blueSize){ //剔除不满足的号码
+                    int redCount = 0;
+                    int blueCount = 0;
+                    String y_redNum = nbNum.split("\\s")[0];
+                    String y_blueNum = nbNum.split("\\s")[1];
+                    //获取昨天的号码红蓝球
+                    y_redArr = Arrays.stream(y_redNum.split(","))
+                            .map(Integer::parseInt)
+                            .collect(Collectors.toList());
+
+                    y_blueArr = Arrays.stream(y_blueNum.split(","))
+                            .map(Integer::parseInt)
+                            .collect(Collectors.toList());
+                    for (Integer num : y_redArr) {
+                        if (openRedArr.contains(num)) {
+                            redCount++;
+                        }
+                    }
+                    //redeemSize
+                    for (Integer num : y_blueArr) {
+                        if (openBlueArr.contains(num)) {
+                            blueCount++;
+                        }
+                    }
+                    String key = redCount + "-" + blueCount;
+                    if("tc".equals(zjType)){
+                        if (Constants.getTcMap().containsKey(key)) {
+                            System.out.println("未购买号码："+nbNum +Constants.getTcMap().get(key));
+                        }
+                    }else{
+                        if (Constants.getFcMap().containsKey(key)) {
+                            System.out.println("未购买号码："+nbNum+Constants.getFcMap().get(key));
+                        }
+                    }
+                }
+            }
+        }
         System.out.println("开始统计历史购彩记录有无中奖信息（只统计红球>="+Constants.sameRedSize+")--->start");
         List<Integer> his_redArr = new ArrayList<>();
         List<Integer> his_blueArr = new ArrayList<>();
