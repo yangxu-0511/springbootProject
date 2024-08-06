@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,8 +56,9 @@ public class AppBaseNum {
      * @Since create in 2024/1/17 14:08
      * @Company 广州云趣信息科技有限公司
      */
-    public static Map<Integer,String> comparisonNum(List<Integer> a_redArr, List<Integer> a_blueArr, int redSize, int blueSize, JSONObject openData) {
-        Map<Integer ,String> similarNumber = new HashMap<>();
+    public static List<Map<Integer ,String>> comparisonNum(List<Integer> a_redArr, List<Integer> a_blueArr, int redSize, int blueSize, JSONObject openData) {
+        List<Map<Integer ,String>> similarNumberList = new ArrayList<>();
+        Map<Integer,String> similarNumber = new HashMap<>();
         //跟所有的公开数据对比
         for (String key : openData.keySet()) {
             int count = 0;
@@ -85,9 +87,10 @@ public class AppBaseNum {
             }
             if(count>=Constants.similarSize){
                 similarNumber.put(count,data);
+                similarNumberList.add(similarNumber);
             }
         }
-        return similarNumber;
+        return similarNumberList;
     }
 
 
@@ -140,13 +143,13 @@ public class AppBaseNum {
                 }else{
                     tmp.put(count,num+1);
                 }
-                System.out.println("该号码在历史中奖信息中总重复数为:"+(redCount+blueCount)+" 其中重复"+redCount+"个红球和"+blueCount+"个蓝球---->"+openNumber);
+                System.out.println("该号码在"+key+"已开奖的号码重复数量:"+(redCount+blueCount)+" 其中重复"+redCount+"个红球和"+blueCount+"个蓝球---->"+openNumber);
             }
         }
-//        tmp.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.reverseOrder())).forEach(System.out::println);
-        tmp.forEach((k,v)->{
-            System.out.println("该号码在历史中奖信息中对比重复"+k+"个的号码数量"+v+"个");
-        });
+        tmp.forEach((key, value) -> {
+                    // 在这里处理每个键值对
+                    System.out.println("该号码在历史中奖信息中对比重复"+key+"个的号码数量"+value+"个");
+                });
     }
 
 

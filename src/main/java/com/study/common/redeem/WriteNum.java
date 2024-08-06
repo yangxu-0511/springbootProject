@@ -7,13 +7,20 @@ package com.study.common.redeem;/*
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.study.common.base.AppBaseNum;
 import com.study.common.base.Constants;
 import com.study.common.utils.DateUtils;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  *@author yangxu
@@ -119,5 +126,62 @@ public class WriteNum extends AppBaseNum {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * @Author yangxu
+     * @Description 给json文件里面的内容排序
+     * @Param: []
+     * @Return: void
+     * @Since create in 2024/8/6 11:10
+     * @Company 广州云趣信息科技有限公司
+     */
+    public static void sortJson() {
+        List<String> pathList = new ArrayList<>();
+        pathList.add(Constants.getHisFilePath());
+        pathList.add(Constants.getTcFilePath());
+        pathList.add(Constants.getFcFilePath());
+        pathList.add(Constants.getNotBuyPath());
+
+        List<String> outList = new ArrayList<>();
+        outList.add(Constants.getHisOutFilePath());
+        outList.add(Constants.getTcFileOutPath());
+        outList.add(Constants.getFcFileOutPath());
+        outList.add(Constants.getNotBuyOutPath());
+
+        Gson gson = new Gson();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        for(int i=0;i<pathList.size();i++) {
+            String hisPath = pathList.get(i);
+            String outPath = outList.get(i);
+            try (FileReader reader = new FileReader(hisPath)) {
+
+                Type mapType = new TypeToken<Map<String, String>>() {
+                }.getType();
+                Map<String, String> data = gson.fromJson(reader, mapType);
+
+                List<Map.Entry<String, String>> entries = new ArrayList<>(data.entrySet());
+                entries.sort((e1, e2) -> {
+                    try {
+                        return sdf.parse(e2.getKey()).compareTo(sdf.parse(e1.getKey()));
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                Map<String, String> sortedData = new LinkedHashMap<>();
+                for (Map.Entry<String, String> entry : entries) {
+                    sortedData.put(entry.getKey(), entry.getValue());
+                }
+                try (FileWriter writer = new FileWriter(outPath)) {
+                    gson.toJson(sortedData, writer);
+                }
+                System.out.println("JSON data has been sorted and written to " + outPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

@@ -10,6 +10,7 @@ package com.study.common.thread;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.study.common.utils.Sm4Util;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -28,16 +29,35 @@ public class TestMain {
     }
 
     public static void main(String[] args) throws Exception {
+        String versionNum = "V12";
+
+        versionNum = Optional.ofNullable(versionNum)
+                .filter(StringUtils::isNotBlank)
+                .map(version -> {
+                    String versionSuffix = version.substring(version.lastIndexOf("V") + 1);
+                    int newVersion = Integer.parseInt(versionSuffix) + 1;
+                    return String.format("V%d",  newVersion);
+                })
+                .orElseGet(() -> String.format("V1"));
+        System.out.println("版本号是: " + versionNum);
+
 //        Map<Integer,Integer> tmp = new HashMap<>();
 //        tmp.put(5,2);
 //        tmp.put(6,1);
 //        tmp.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.reverseOrder())).forEach(System.out::println);
+        String reporter = "SC00200";
+        reporter = reporter.substring(0, reporter.length()-2);
+        System.out.println(reporter);
 
         String sysReporter = "JT005012,JT00503,JT00502";
-        String reporter = "JT00501";
+        String reporters = "JT00501";
         boolean ifExist = Arrays.stream(sysReporter.split(","))
-                .anyMatch(element -> element.equals(reporter));
+                .anyMatch(element -> element.equals(reporters));
+
+        boolean ifExist2 = Arrays.stream(sysReporter.split(","))
+                .collect(Collectors.toList()).contains(reporters);
         System.out.println("==="+ifExist);
+        System.out.println("===2"+ifExist2);
 
 
         String type = "99010401";

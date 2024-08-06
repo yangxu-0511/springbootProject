@@ -152,25 +152,37 @@ public class DreamNumer extends AppBaseNum {
 
 	    	System.out.println("今晚的中奖号码历史未出现 请查收您的一千万中奖号码^^ "+zjNum);
 			//现在开始执行比对生成的号码在历史中奖信息中相似度
-			Map<Integer,String> similarNumber = comparisonNum(a_redArr,a_blueArr,redSize,blueSize,historyData);
+			List<Map<Integer,String>> similarNumber = comparisonNum(a_redArr,a_blueArr,redSize,blueSize,historyData);
 			if(similarNumber.size()>0){
-				similarNumber.forEach((key, value) -> {
-					System.out.println("存在相似个数: " + key + ", 号码: " + value);
-				});
+				similarNumber.stream()  // 创建流
+						.forEach(map -> {
+							// 使用Lambda表达式遍历map
+							map.forEach((key, value) -> {
+								// 在这里处理每个键值对
+								System.out.println("存在相似个数: " + key + ", 号码: " + value);
+							});
+						});
 				System.out.print("请在控制台输入yes/y(需要）或no/n(不需要）来确定是否需要这注号码：");
+				boolean validInput = false;
 				Scanner scanner = new Scanner(System.in);
-				String input = scanner.nextLine();
-				if ("no".equals(input) || "n".equals(input) || "不需要".equals(input)) {
-					System.out.println("您输入了no，重新生成号码...");
-					WriteNum.writeNotBuyNumber(zjNum);
-					getDreamNum(zjType);
-				} else if ("yes".equals(input) || "y".equals(input)  || "需要".equals(input)) {
-					System.out.println("您输入了yes，不再重新生成号码...");
-					//把号码写入历史文件
-					WriteNum.writeMyNumber(zjNum);
-					comparisonOpenNum(a_redArr,a_blueArr,redSize,blueSize,historyData);
-				} else {
-					System.out.println("输入无效，请重新输入！");
+
+				while (!validInput) {
+					String input = scanner.nextLine();
+					if ("no".equals(input) || "n".equals(input) || "N".equals(input) || "不需要".equals(input)) {
+						System.out.println("您输入了no，重新生成号码...");
+						WriteNum.writeNotBuyNumber(zjNum);
+						getDreamNum(zjType);
+						validInput = true; // 输入有效，退出循环
+					} else if ("yes".equals(input) || "y".equals(input) || "Y".equals(input) || "需要".equals(input)) {
+						System.out.println("您输入了yes，不再重新生成号码...");
+						// 把号码写入历史文件
+						WriteNum.writeMyNumber(zjNum);
+						comparisonOpenNum(a_redArr, a_blueArr, redSize, blueSize, historyData);
+						validInput = true; // 输入有效，退出循环
+					} else {
+						System.out.println("输入无效，请重新输入！");
+						// 继续循环等待有效输入
+					}
 				}
 			}else{
 				WriteNum.writeMyNumber(zjNum);

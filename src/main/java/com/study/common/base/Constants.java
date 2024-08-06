@@ -12,11 +12,23 @@ import java.util.Map;
  *@author yangxu
  *@create 2024/4/24 11:10
  */
+
 public class Constants {
-    private static final String hisFilePath = "D:\\idea-workspace\\springbootProject\\history.json";
-    private static final String notBuyPath = "D:\\idea-workspace\\springbootProject\\notBuy.json";
-    private static final String tcFilePath  = "D:\\idea-workspace\\springbootProject\\dlt.json";
-    private static final String fcFilePath  = "D:\\idea-workspace\\springbootProject\\ssq.json";
+    private static final String hisFilePath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\history.json";
+    private static final String notBuyPath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\notBuy.json";
+    private static final String tcFilePath  = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\dlt.json";
+    private static final String fcFilePath  = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\ssq.json";
+
+    private static final String hisOutFilePath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\history_out.json";
+    private static final String notBuyOutPath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\notBuy_out.json";
+    private static final String tcFileOutPath  = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\dlt_out.json";
+    private static final String fcFileOutPath  = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\ssq_out.json";
+
+
+
+    public static final String pythonScriptPath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\zj.py";
+    public static final String pythonexe = "C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0\\python3.10.exe";
+    public static final String ifRunPath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\runPython.json";
     public static final int similarSize = 5; //定义相似度个数
     public static final int sameRedSize = 4; //定义红球命中个数
     public static final int sameHisSize = 3; //历史命中数
@@ -24,7 +36,7 @@ public class Constants {
     private static final Map<String, String> fcMap = new HashMap<>();
     static {
         tcMap.put("5-2", "恭喜你成为百万富翁……历史性的一刻！！！中奖金额>=500万");
-        tcMap.put("5-1", "恭喜中了二等奖 卸下了很大一部分负担！预计奖金30万");
+        tcMap.put("5-1", "恭喜中了二等奖 卸下了很大一部分负担！奖金≈30万");
         tcMap.put("5-0", "恭喜中了三等奖 一笔可观的意外之财! 奖金=1万");
         tcMap.put("4-2", "恭喜中了四等奖 一个月生活费！奖金=3000");
         tcMap.put("4-1", "恭喜中了五等奖 买一版刮刮乐吧！奖金=300");
@@ -38,7 +50,7 @@ public class Constants {
         tcMap.put("0-2", "恭喜中了九等奖 买一张刮刮乐吧！奖金=5");
 
         fcMap.put("6-1", "恭喜你成为百万富翁……历史性的一刻！！！中奖金额>=500万");
-        fcMap.put("6-0", "恭喜中了二等奖 卸下了很大一部分负担！预计奖金30万");
+        fcMap.put("6-0", "恭喜中了二等奖 卸下了很大一部分负担！奖金≈30万");
         fcMap.put("5-1", "恭喜中了三等奖 一笔可观的意外之财! 奖金=1万");
         fcMap.put("5-0", "恭喜中了四等奖 买四张刮刮乐吧！奖金=200");
         fcMap.put("4-1", "恭喜中了四等奖 买四张刮刮乐吧！奖金=200");
@@ -68,4 +80,18 @@ public class Constants {
     public static String getNotBuyPath() {
         return notBuyPath;
     }
+    public static String getHisOutFilePath() {
+        return hisOutFilePath;
+    }
+    public static String getTcFileOutPath() {
+        return tcFileOutPath;
+    }
+    public static String getFcFileOutPath() {
+        return fcFileOutPath;
+    }
+    public static String getNotBuyOutPath() {
+        return notBuyOutPath;
+    }
+
+
 }

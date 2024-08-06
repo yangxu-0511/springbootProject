@@ -7,16 +7,18 @@ public class AppbaseController {
     public static void main(String[] args) {
 
         //获取每天的号码
-        getToday();
+//        getToday();
         //每天执行一次脚本
         //获取号码
 //		action("2","fc");
 //		自动兑奖
 //		action("3","");
-        //指定日期兑奖 周六=T-2
-//		action("3","2024-06-22");
-        //写入号码 日期默认为昨天的日期
-//		action("4","07,18,22,25,27,33 09");
+        //指定日期兑奖=T-1 如果日期是周六=T-2
+//		action("3","2024-08-03");
+        //写入号码 购买日期默认为昨天的日期
+//		action("4","09,12,13,31,35 01,05");
+        //把json文件排序
+//        action("5",null);
 
     }
 
@@ -43,6 +45,9 @@ public class AppbaseController {
                 break;
             case "4": //写入号码
                 WriteNum.writeMyNumber(params, 2);
+                break;
+            case "5": //写入号码
+                WriteNum.sortJson();
                 break;
             default:
                 break;
