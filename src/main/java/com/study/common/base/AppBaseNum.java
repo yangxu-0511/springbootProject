@@ -23,6 +23,7 @@ import java.util.stream.Stream;
  */
 public class AppBaseNum {
 
+    public static int i = 1;
     /**
      * @Author yangxu
      * @Description 解析json数据
@@ -56,10 +57,11 @@ public class AppBaseNum {
      * @Since create in 2024/1/17 14:08
      * @Company 广州云趣信息科技有限公司
      */
-    public static List<Map<Integer ,String>> comparisonNum(List<Integer> a_redArr, List<Integer> a_blueArr, int redSize, int blueSize, JSONObject openData) {
-        List<Map<Integer ,String>> similarNumberList = new ArrayList<>();
-        Map<Integer,String> similarNumber = new HashMap<>();
+    public static List<Map<String ,String>> comparisonNum(List<Integer> a_redArr, List<Integer> a_blueArr, int redSize, int blueSize, JSONObject openData) {
+        List<Map<String ,String>> similarNumberList = new ArrayList<>();
+        Map<String,String> similarNumber = new HashMap<>();
         //跟所有的公开数据对比
+
         for (String key : openData.keySet()) {
             int count = 0;
             String data = openData.getString(key);
@@ -86,8 +88,9 @@ public class AppBaseNum {
                 }
             }
             if(count>=Constants.similarSize){
-                similarNumber.put(count,data);
+                similarNumber.put(count+"_"+i,data);
                 similarNumberList.add(similarNumber);
+                i++;
             }
         }
         return similarNumberList;

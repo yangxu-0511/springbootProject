@@ -7,9 +7,10 @@ package com.study.common.thread;
  * @Company 广州云趣信息科技有限公司
  */
 
-import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.study.common.utils.Sm4Util;
+import com.yq.busi.common.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -29,8 +30,19 @@ public class TestMain {
     }
 
     public static void main(String[] args) throws Exception {
-        String versionNum = "V12";
 
+        System.out.println(String.format("%06d", 1));
+        String dataJ = "{\"pageIndex\":1,\"pageSize\":500,\"orderNo\":\"\",\"appealPhone\":\"\",\"queryTime\":[\"2024-08-28 18:00:00\",\"2024-08-28 18:10:59\"]}";
+        JSONObject dj =  JSONObject.parseObject(dataJ);
+        System.out.println("szie= "+dj.getJSONArray("queryTime").size());
+
+
+        DateTimeFormatter ff = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String currentDateString = LocalDateTime.now().format(ff);
+        System.out.println(currentDateString);  // 用于调试
+
+
+        String versionNum = "V12";
         versionNum = Optional.ofNullable(versionNum)
                 .filter(StringUtils::isNotBlank)
                 .map(version -> {
@@ -41,13 +53,10 @@ public class TestMain {
                 .orElseGet(() -> String.format("V1"));
         System.out.println("版本号是: " + versionNum);
 
-//        Map<Integer,Integer> tmp = new HashMap<>();
-//        tmp.put(5,2);
-//        tmp.put(6,1);
-//        tmp.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.reverseOrder())).forEach(System.out::println);
-        String reporter = "SC00200";
-        reporter = reporter.substring(0, reporter.length()-2);
-        System.out.println(reporter);
+        double hsyzl = 494.8;
+        int tmp = (int)Math.round(hsyzl);
+        System.out.println("hsyzl="+tmp);
+
 
         String sysReporter = "JT005012,JT00503,JT00502";
         String reporters = "JT00501";
@@ -113,4 +122,5 @@ public class TestMain {
         }
         return months;
     }
+
 }

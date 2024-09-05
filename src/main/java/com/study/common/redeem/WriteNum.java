@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  *@author yangxu
@@ -151,8 +152,10 @@ public class WriteNum extends AppBaseNum {
 
         Gson gson = new Gson();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat fileDate = new SimpleDateFormat("yyyyMMdd");
 
-        for(int i=0;i<pathList.size();i++) {
+
+        Stream.iterate(0, i -> i + 1).limit(pathList.size()).forEach(i -> {
             String hisPath = pathList.get(i);
             String outPath = outList.get(i);
             try (FileReader reader = new FileReader(hisPath)) {
@@ -181,7 +184,31 @@ public class WriteNum extends AppBaseNum {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        });
+
+        Stream.iterate(0, i -> i + 1).limit(pathList.size()).forEach(i -> {
+            String hisPath = pathList.get(i);
+            String outPath = outList.get(i);
+
+            File oriFile = new File(hisPath);
+            File outFile = new File(outPath);
+            String todayDate = fileDate.format(new Date());
+
+            File newFile = new File(Constants.getBasePath(), oriFile.getName().split("\\.")[0]+"_"+todayDate+".json");
+            File newOutFile = new File(Constants.getBasePath(), oriFile.getName());
+
+            if (oriFile.renameTo(newFile)) {
+                System.out.println(oriFile.getName()+" renamed to " + newFile.getName());
+            } else {
+                System.out.println("Failed to rename "+oriFile.getName());
+            }
+            if (outFile.renameTo(newOutFile)) {
+                System.out.println(outFile.getName()+" renamed to " + newOutFile.getName());
+            } else {
+                System.out.println("Failed to rename "+outFile.getName());
+            }
+        });
+
 
     }
 }

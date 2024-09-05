@@ -17,7 +17,7 @@ for page_no in range(1, pages + 1):
         modified_phone = re.sub(r'\s', '|', phone)
         result[record['lotteryDrawTime']] = modified_phone
         # 指定要写入的文件名
-        filename = "dlt.json"
+        filename = "D:/idea-workspace/springbootProject/src/main/resources/dlt.json"
         # 使用with语句打开文件并将数据写入
         with open(filename, "w") as json_file:
             json.dump(result, json_file)
@@ -36,7 +36,7 @@ for record in data_list2:
     result2[record['date'][0:10]] = modified_phone
 
 # 指定要写入的文件名
-filename2 = "ssq.json"
+filename2 = "D:/idea-workspace/springbootProject/src/main/resources/ssq.json"
 # 使用with语句打开文件并将数据写入
 with open(filename2, "w") as json_file2:
     json.dump(result2, json_file2)

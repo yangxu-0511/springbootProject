@@ -14,6 +14,7 @@ import java.util.Map;
  */
 
 public class Constants {
+    private static final String basePath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources";
     private static final String hisFilePath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\history.json";
     private static final String notBuyPath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\notBuy.json";
     private static final String tcFilePath  = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\dlt.json";
@@ -68,6 +69,9 @@ public class Constants {
         return fcMap;
     }
 
+    public static String getBasePath() {
+        return basePath;
+    }
     public static String getHisFilePath() {
         return hisFilePath;
     }
