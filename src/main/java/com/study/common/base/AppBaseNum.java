@@ -12,10 +12,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *@author yangxu
@@ -57,8 +58,7 @@ public class AppBaseNum {
      * @Since create in 2024/1/17 14:08
      * @Company 广州云趣信息科技有限公司
      */
-    public static List<Map<String ,String>> comparisonNum(List<Integer> a_redArr, List<Integer> a_blueArr, int redSize, int blueSize, JSONObject openData) {
-        List<Map<String ,String>> similarNumberList = new ArrayList<>();
+    public static Map<String ,String> comparisonNum(List<Integer> a_redArr, List<Integer> a_blueArr, int redSize, int blueSize, JSONObject openData) {
         Map<String,String> similarNumber = new HashMap<>();
         //跟所有的公开数据对比
 
@@ -89,11 +89,10 @@ public class AppBaseNum {
             }
             if(count>=Constants.similarSize){
                 similarNumber.put(count+"_"+i,data);
-                similarNumberList.add(similarNumber);
                 i++;
             }
         }
-        return similarNumberList;
+        return similarNumber;
     }
 
 

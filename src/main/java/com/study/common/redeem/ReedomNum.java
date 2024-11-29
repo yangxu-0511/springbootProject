@@ -90,6 +90,7 @@ public class ReedomNum extends AppBaseNum {
         String openNumber = openData.getString(openDate);
         if(StrUtil.isEmpty(openNumber)){
             System.out.println("未获取到昨天的中奖号，执行失败……");
+            System.out.println("");
             return ;
         }
         System.out.println("开奖奖项是："+("tc".equals(zjType)?"大乐透":"双色球")+"号码为："+openNumber);
@@ -112,6 +113,7 @@ public class ReedomNum extends AppBaseNum {
         String yesterdayNum  = hisJson.getString(buyDate); // "02,12,13,17,26,32 11|07,12,20,21,31 06,12|04,06,14,29,34 01,09"
         if(StrUtil.isNotEmpty(yesterdayNum)){
             //优先对比昨天的号码昨天
+            System.out.println("");
             System.out.println("开始对比当天购买的号码---->start");
             String[] yesterdayNumsArr = yesterdayNum.split("\\|");
             List<Integer> y_redArr = new ArrayList<>();
@@ -158,6 +160,7 @@ public class ReedomNum extends AppBaseNum {
             System.out.println("当天尚未购彩----");
         }
         System.out.println("当天号码对比结束---->end");
+        System.out.println("");
 
         JSONObject notBuyJson = filterJson(Constants.getNotBuyPath());
         String notBuyNum  = notBuyJson.getString(buyDate); // "02,12,13,17,26,32 11|07,12,20,21,31 06,12|04,06,14,29,34 01,09"
@@ -245,6 +248,7 @@ public class ReedomNum extends AppBaseNum {
             }
         }
         System.out.println("历史号码统计结束---->end");
+        System.out.println("");
         //统计开奖号码跟历史开奖号码相似程度
         System.out.println("统计开奖号码跟历史开奖号码相似程度-->");
         comparisonOpenNum(openRedArr,openBlueArr,redSize,blueSize,openData);

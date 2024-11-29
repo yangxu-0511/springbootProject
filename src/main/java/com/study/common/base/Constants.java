@@ -17,13 +17,14 @@ public class Constants {
     private static final String basePath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources";
     private static final String hisFilePath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\history.json";
     private static final String notBuyPath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\notBuy.json";
-    private static final String tcFilePath  = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\dlt.json";
-    private static final String fcFilePath  = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\ssq.json";
+    private static final String tcFilePath  = "D:\\idea-workspace\\springbootProject\\dlt.json";
+    private static final String tcBakFilePath  = "D:\\idea-workspace\\springbootProject\\dlt_bak.json";
+    private static final String fcFilePath  = "D:\\idea-workspace\\springbootProject\\ssq.json";
 
     private static final String hisOutFilePath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\history_sort.json";
     private static final String notBuyOutPath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\notBuy_sort.json";
-    private static final String tcFileOutPath  = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\dlt_sort.json";
-    private static final String fcFileOutPath  = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\ssq_sort.json";
+    private static final String tcFileOutPath  = "D:\\idea-workspace\\springbootProject\\\\dlt_sort.json";
+    private static final String fcFileOutPath  = "D:\\idea-workspace\\springbootProject\\ssq_sort.json";
 
 
 
@@ -77,6 +78,9 @@ public class Constants {
     }
     public static String getTcFilePath() {
         return tcFilePath;
+    }
+    public static String getTcBakFilePath() {
+        return tcBakFilePath;
     }
     public static String getFcFilePath() {
         return fcFilePath;

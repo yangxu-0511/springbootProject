@@ -152,16 +152,11 @@ public class DreamNumer extends AppBaseNum {
 
 	    	System.out.println("今晚的中奖号码历史未出现 请查收您的一千万中奖号码^^ "+zjNum);
 			//现在开始执行比对生成的号码在历史中奖信息中相似度
-			List<Map<String,String>> similarNumber = comparisonNum(a_redArr,a_blueArr,redSize,blueSize,historyData);
-			if(similarNumber.size()>0){
-				similarNumber.stream()  // 创建流
-						.forEach(map -> {
-							// 使用Lambda表达式遍历map
-							map.forEach((key, value) -> {
-								// 在这里处理每个键值对
-								System.out.println("存在相似个数: " + key + ", 号码: " + value);
-							});
-						});
+			Map<String,String> similarNumber = comparisonNum(a_redArr,a_blueArr,redSize,blueSize,historyData);
+			if(!similarNumber.isEmpty()){
+				similarNumber.forEach((key, value) -> {
+					System.out.println("存在相似个数: " + key + ", 号码: " + value);
+				});
 				System.out.print("请在控制台输入yes/y(需要）或no/n(不需要）来确定是否需要这注号码：");
 				boolean validInput = false;
 				Scanner scanner = new Scanner(System.in);

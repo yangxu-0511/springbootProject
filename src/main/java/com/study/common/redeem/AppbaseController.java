@@ -5,21 +5,24 @@ import cn.hutool.core.util.StrUtil;
 public class AppbaseController {
 
     public static void main(String[] args) {
-        //获取每天的号码
-        getToday();
+        //获取每天的号码 命运的齿轮开始转动
+//       getToday();
         //每天执行一次脚本
         //获取号码
 //		action("2","fc");
 //		自动兑奖
-//		action("3","");
+		action("3");
         //指定日期兑奖=T-1 如果日期是周六=T-2
-//		action("3","2024-08-31");
-        //写入号码 购买日期默认为昨天的日期
-//		action("4","07,08,10,18,19 05,08");
+//		action("3","2024-11-09");
+        //写入号码 购买日期默认为昨天的日期 1当天 2昨天
+//		action("4","04,06,08,09,27 01,04","2");
         //把json文件排序
-//      action("5",null);
+//      action("5");
 
     }
+
+
+
 
     /*
      * @Author yangxu
@@ -29,7 +32,7 @@ public class AppbaseController {
      * @Since create in 2024/1/22 13:42
      * @Company 广州云趣信息科技有限公司
      */
-    public static void action(String type, String params) {
+    public static void action(String type, String params,String params2) {
         switch (type) {
             case "1": //执行Python脚本获取最新开奖号码
                 RunPython.run();
@@ -43,7 +46,7 @@ public class AppbaseController {
                 ReedomNum.redeem(params);
                 break;
             case "4": //写入号码
-                WriteNum.writeMyNumber(params, 2);
+                WriteNum.writeMyNumber(params, Integer.parseInt(params2));
                 break;
             case "5": //写入号码
                 WriteNum.sortJson();
@@ -54,12 +57,15 @@ public class AppbaseController {
     }
 
     public static void action(String type) {
-        action(type, null);
+        action(type, null,null);
+    }
+    public static void action(String type,String params) {
+        action(type, params,null);
     }
 
     public static void getToday() {
         action("1");
-        action("2", null);
+        action("2", null,null);
     }
 
 }
