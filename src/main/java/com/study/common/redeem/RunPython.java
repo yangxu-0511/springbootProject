@@ -65,15 +65,22 @@ public class RunPython {
                 // 将 JSON 对象写入文件
                 fileWriter.write(jsonObject.toJSONString());
                 fileWriter.close();
-
                  // Read the data from the bak file
-                JSONObject bakObject = instance.filterJson(Constants.getTcBakFilePath());
+                JSONObject bakDltObject = instance.filterJson(Constants.getTcBakFilePath());
                 JSONObject dltObject = instance.filterJson(Constants.getTcFilePath());
-                dltObject.putAll(bakObject);
+                dltObject.putAll(bakDltObject);
                 FileWriter fileWriter2 = new FileWriter(Constants.getTcFilePath());
                 fileWriter2.write(dltObject.toJSONString());
                 fileWriter2.close();
-                System.out.println("Data from dlt_bak.json has been merged into dlt.json successfully.");
+
+                // Read the data from the bak file
+                JSONObject bakSsqObject = instance.filterJson(Constants.getFcBakFilePath());
+                JSONObject ssqObject = instance.filterJson(Constants.getFcFilePath());
+                ssqObject.putAll(bakSsqObject);
+                FileWriter fileWriter3 = new FileWriter(Constants.getFcFilePath());
+                fileWriter3.write(ssqObject.toJSONString());
+                fileWriter3.close();
+                System.out.println("Data from bak.json has been merged into dlt/ssq.json successfully.");
             } else {
                 System.out.println("Python script execution failed with exit code: " + exitCode);
             }

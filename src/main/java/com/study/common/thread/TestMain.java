@@ -31,16 +31,14 @@ public class TestMain {
     }
 
     public static void main(String[] args) throws Exception {
-        String tmpJStr="{\"fees\":\"10\",\"data\":\"5\",\"valid_period\":\"长期有效\",\"action_type\":\"D\",\"applicable_area\":\"7990,7010,7970,7980,7950,7960,7930,7940,7910,7920,7900\",\"channel\":\"线下渠道，中国移动APP，10086热线\",\"fees_unit\":\"元/月\",\"offline_day\":\"20991231\",\"tariff_attr\":\"2\",\"duration\":\"无\",\"applicable_people\":\"省内\",\"responsibility\":\"无 \",\"unsubscribe\":\"线下移动营业厅或者10086热线\",\"sms\":\"0\",\"orient_traffic\":\"0\",\"others\":\"1、功能费10元；2、含5GB全国流量（不含港澳台），订购立即生效，按月续订，流量可结转、不可共享、不可转赠；3、享5G臻享服务（下行最高3Gbps，上行最高200Mbps） \",\"seq_no\":\"JX22024102426\",\"type2\":\"1\",\"reporter\":\"JX2\",\"orient_traffic_unit\":\"MB\",\"type1\":\"1\",\"online_day\":\"20240527\",\"data_unit\":\"GB\",\"call\":\"0\",\"name\":\"5G-A标准流量包（10元5G流量月包）\",\"other_content\":\"1、功能费10元；2、含5GB全国流量（不含港澳台），订购立即生效，按月\n" +
-                "续订，流量可结转、不可共享、不可转赠；3、享5G臻享服务（下行最高3Gbps，上行最高200Mbps）\"}";
-        JSONObject data = JSONObject.parseObject(tmpJStr);
-        List<String> delRequiredFields = Arrays.asList("seq_no", "reporter", "action_type", "origin_report_no");
-            for (String field : delRequiredFields) {
-                String val = data.getString(field);
-                if (!StringUtils.isNotBlank(val)) {
-                    System.out.println("'" + field + "'必填参数为空");
-                }
-            }
+
+        String offlineDay = "20240230";  // 输入日期
+        if (isValidDate(offlineDay)) {
+            System.out.println("日期有效");
+        } else {
+            System.out.println("日期无效");
+        }
+
 
         String reportt = "SC1";
         System.out.println("sss="+reportt.substring(reportt.length() - 1));
@@ -146,5 +144,15 @@ public class TestMain {
         return months;
     }
 
+    public static boolean isValidDate(String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        sdf.setLenient(false);  // 设置为不宽松的日期解析
+        try {
+            sdf.parse(dateStr);  // 尝试解析日期
+            return true;  // 如果没有异常，日期有效
+        } catch (ParseException e) {
+            return false;  // 如果抛出异常，说明日期无效
+        }
+    }
 
 }

@@ -28,7 +28,7 @@ with open(filename, "w") as json_file:
 print(f"Data has been written to {filename}")
 
 result2 = {}
-url2 = "http://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=ssq&issueCount=&issueStart=&issueEnd=&dayStart=&dayEnd=&week=&systemType=PC&pageNo=1&pageSize=96000000" 
+url2 = "http://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=ssq&issueCount=&issueStart=&issueEnd=&dayStart=&dayEnd=&week=&systemType=PC&pageNo=1&pageSize=5"
 response2 = requests.get(url2)
 json_data2 = response2.json()
 data_list2 = json_data2['result']
@@ -39,7 +39,7 @@ for record in data_list2:
     result2[record['date'][0:10]] = modified_phone
 
 # 指定要写入的文件名
-filename2 = "ssq.json"
+filename2 = "ssq_bak.json"
 # 使用with语句打开文件并将数据写入
 with open(filename2, "w") as json_file2:
     json.dump(result2, json_file2)

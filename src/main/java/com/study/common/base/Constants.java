@@ -20,6 +20,7 @@ public class Constants {
     private static final String tcFilePath  = "D:\\idea-workspace\\springbootProject\\dlt.json";
     private static final String tcBakFilePath  = "D:\\idea-workspace\\springbootProject\\dlt_bak.json";
     private static final String fcFilePath  = "D:\\idea-workspace\\springbootProject\\ssq.json";
+    private static final String fcBakFilePath  = "D:\\idea-workspace\\springbootProject\\ssq_bak.json";
 
     private static final String hisOutFilePath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\history_sort.json";
     private static final String notBuyOutPath = "D:\\idea-workspace\\springbootProject\\src\\main\\resources\\notBuy_sort.json";
@@ -84,6 +85,9 @@ public class Constants {
     }
     public static String getFcFilePath() {
         return fcFilePath;
+    }
+    public static String getFcBakFilePath() {
+        return fcBakFilePath;
     }
     public static String getNotBuyPath() {
         return notBuyPath;
