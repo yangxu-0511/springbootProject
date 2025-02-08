@@ -13,25 +13,23 @@ import com.study.common.base.AppBaseNum;
 import com.study.common.base.Constants;
 import com.study.common.utils.DateUtils;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.logging.Logger;
 
 /**
  *@author yangxu
  *@create 2024/4/24 11:27
  */
 public class WriteNum extends AppBaseNum {
-
+    private static final Logger logger = Logger.getLogger(WriteNum.class.getName());
+    private static final Gson gson = new Gson();
 
     public static void writeMyNumber(String number) {
-        writeMyNumber(number,1);
+        writeMyNumber(number, 1);
     }
 
     /**
@@ -42,46 +40,9 @@ public class WriteNum extends AppBaseNum {
      * @Since create in 2024/1/17 14:02
      * @Company 广州云趣信息科技有限公司
      */
-    public static void writeMyNumber(String number,int type) {
-        String date;
-        if(type==2) {
-            date = DateUtils.getYesterdayDate();
-        }else {
-            date = DateUtils.getCurrentDate();
-        }
-        //判断号码是否存在
-        File file = new File(Constants.getHisFilePath());
-        // 创建JSON对象并设置键值对
-        JSONObject jsonObject = new JSONObject();
-        if(file.exists()) { //文件已经存在就取出来然后重新写入
-            jsonObject = filterJson(Constants.getHisFilePath());
-            assert jsonObject != null;
-            String hisNum =jsonObject.getString(date);
-            if(StrUtil.isNotEmpty(hisNum)) {//取出历史号码
-                if(hisNum.contains(number)){
-                    System.out.println("该号码已经存在……");
-                    return;
-                }
-                hisNum = hisNum+"|"+number;
-                jsonObject.put(date, hisNum);
-            }else{
-                jsonObject.put(date, number);
-            }
-        }else{
-            jsonObject.put(date, number);
-        }
-        // 指定 JSON 文件路径
-        try {
-            // 创建 FileWriter 对象
-            FileWriter fileWriter = new FileWriter(Constants.getHisFilePath());
-            // 将 JSON 对象写入文件
-            fileWriter.write(jsonObject.toJSONString());
-            // 关闭 FileWriter
-            fileWriter.close();
-            System.out.println("号码已成功写入历史号码文件。");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void writeMyNumber(String number, int type) {
+        String date = (type == 2) ? DateUtils.getYesterdayDate() : DateUtils.getCurrentDate();
+        writeNumberToFile(number, date, Constants.getHisFilePath(), "历史号码");
     }
 
     /*
@@ -93,40 +54,46 @@ public class WriteNum extends AppBaseNum {
      * @Company 广州云趣信息科技有限公司
      */
     public static void writeNotBuyNumber(String number) {
-        String date = DateUtils.getCurrentDate();
-        //判断号码是否存在
-        File file = new File(Constants.getNotBuyPath());
-        // 创建JSON对象并设置键值对
-        JSONObject jsonObject = new JSONObject();
-        if(file.exists()) { //文件已经存在就取出来然后重新写入
-            jsonObject = filterJson(Constants.getNotBuyPath());
-            assert jsonObject != null;
-            String hisNum =jsonObject.getString(date);
-            if(StrUtil.isNotEmpty(hisNum)) {//取出历史号码
-                if(hisNum.contains(number)){
-                    System.out.println("该号码已经存在……");
-                    return;
-                }
-                hisNum = hisNum+"|"+number;
-                jsonObject.put(date, hisNum);
-            }else{
-                jsonObject.put(date, number);
+        writeNumberToFile(number, DateUtils.getCurrentDate(), Constants.getNotBuyPath(), "未买号码");
+    }
+
+    private static void writeNumberToFile(String number, String date, String filePath, String fileType) {
+        File file = new File(filePath);
+        JSONObject jsonObject = file.exists() ? 
+            updateExistingJson(file, date, number) : 
+            createNewJson(date, number);
+
+        try (FileWriter fileWriter = new FileWriter(filePath)) {
+            fileWriter.write(jsonObject.toJSONString());
+            logger.info("号码已成功写入" + fileType + "文件");
+        } catch (IOException e) {
+            logger.severe("写入" + fileType + "文件失败: " + e.getMessage());
+        }
+    }
+
+    private static JSONObject updateExistingJson(File file, String date, String number) {
+        JSONObject jsonObject = filterJson(file.getPath());
+        if (jsonObject == null) {
+            return createNewJson(date, number);
+        }
+
+        String existingNum = jsonObject.getString(date);
+        if (StrUtil.isNotEmpty(existingNum)) {
+            if (existingNum.contains(number)) {
+                logger.info("该号码已经存在");
+                return jsonObject;
             }
-        }else{
+            jsonObject.put(date, existingNum + "|" + number);
+        } else {
             jsonObject.put(date, number);
         }
-        // 指定 JSON 文件路径
-        try {
-            // 创建 FileWriter 对象
-            FileWriter fileWriter = new FileWriter(Constants.getNotBuyPath());
-            // 将 JSON 对象写入文件
-            fileWriter.write(jsonObject.toJSONString());
-            // 关闭 FileWriter
-            fileWriter.close();
-            System.out.println("号码已成功写入未买号码文件。");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return jsonObject;
+    }
+
+    private static JSONObject createNewJson(String date, String number) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(date, number);
+        return jsonObject;
     }
 
     /**
@@ -138,77 +105,73 @@ public class WriteNum extends AppBaseNum {
      * @Company 广州云趣信息科技有限公司
      */
     public static void sortJson() {
-        List<String> pathList = new ArrayList<>();
-        pathList.add(Constants.getHisFilePath());
-        pathList.add(Constants.getTcFilePath());
-        pathList.add(Constants.getFcFilePath());
-        pathList.add(Constants.getNotBuyPath());
+        List<String> paths = Arrays.asList(
+            Constants.getHisFilePath(),
+            Constants.getTcFilePath(),
+            Constants.getFcFilePath(),
+            Constants.getNotBuyPath()
+        );
 
-        List<String> outList = new ArrayList<>();
-        outList.add(Constants.getHisOutFilePath());
-        outList.add(Constants.getTcFileOutPath());
-        outList.add(Constants.getFcFileOutPath());
-        outList.add(Constants.getNotBuyOutPath());
+        List<String> outPaths = Arrays.asList(
+            Constants.getHisOutFilePath(),
+            Constants.getTcFileOutPath(),
+            Constants.getFcFileOutPath(),
+            Constants.getNotBuyOutPath()
+        );
 
-        Gson gson = new Gson();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat fileDate = new SimpleDateFormat("yyyyMMdd");
+        String todayDate = fileDate.format(new Date());
 
+        for (int i = 0; i < paths.size(); i++) {
+            sortAndRenameFile(paths.get(i), outPaths.get(i), sdf, todayDate);
+        }
+    }
 
-        Stream.iterate(0, i -> i + 1).limit(pathList.size()).forEach(i -> {
-            String hisPath = pathList.get(i);
-            String outPath = outList.get(i);
-            try (FileReader reader = new FileReader(hisPath)) {
+    private static void sortAndRenameFile(String inputPath, String outputPath, SimpleDateFormat sdf, String todayDate) {
+        try (FileReader reader = new FileReader(inputPath)) {
+            Type mapType = new TypeToken<Map<String, String>>() {}.getType();
+            Map<String, String> data = gson.fromJson(reader, mapType);
 
-                Type mapType = new TypeToken<Map<String, String>>() {
-                }.getType();
-                Map<String, String> data = gson.fromJson(reader, mapType);
+            Map<String, String> sortedData = sortMapByDate(data, sdf);
+            
+            try (FileWriter writer = new FileWriter(outputPath)) {
+                gson.toJson(sortedData, writer);
+            }
 
-                List<Map.Entry<String, String>> entries = new ArrayList<>(data.entrySet());
-                entries.sort((e1, e2) -> {
-                    try {
-                        return sdf.parse(e2.getKey()).compareTo(sdf.parse(e1.getKey()));
-                    } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+            renameFiles(inputPath, outputPath, todayDate);
+        } catch (IOException e) {
+            logger.severe("文件处理失败: " + e.getMessage());
+        }
+    }
 
-                Map<String, String> sortedData = new LinkedHashMap<>();
-                for (Map.Entry<String, String> entry : entries) {
-                    sortedData.put(entry.getKey(), entry.getValue());
+    private static Map<String, String> sortMapByDate(Map<String, String> data, SimpleDateFormat sdf) {
+        return data.entrySet().stream()
+            .sorted((e1, e2) -> {
+                try {
+                    return sdf.parse(e2.getKey()).compareTo(sdf.parse(e1.getKey()));
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
                 }
-                try (FileWriter writer = new FileWriter(outPath)) {
-                    gson.toJson(sortedData, writer);
-                }
-                System.out.println("JSON data has been sorted and written to " + outPath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+            })
+            .collect(LinkedHashMap::new,
+                    (map, entry) -> map.put(entry.getKey(), entry.getValue()),
+                    Map::putAll);
+    }
 
-        Stream.iterate(0, i -> i + 1).limit(pathList.size()).forEach(i -> {
-            String hisPath = pathList.get(i);
-            String outPath = outList.get(i);
+    private static void renameFiles(String inputPath, String outputPath, String todayDate) {
+        File oriFile = new File(inputPath);
+        File outFile = new File(outputPath);
+        
+        File newFile = new File(Constants.getBasePath(), 
+            oriFile.getName().split("\\.")[0] + "_" + todayDate + ".json");
+        File newOutFile = new File(Constants.getBasePath(), oriFile.getName());
 
-            File oriFile = new File(hisPath);
-            File outFile = new File(outPath);
-            String todayDate = fileDate.format(new Date());
-
-            File newFile = new File(Constants.getBasePath(), oriFile.getName().split("\\.")[0]+"_"+todayDate+".json");
-            File newOutFile = new File(Constants.getBasePath(), oriFile.getName());
-
-            if (oriFile.renameTo(newFile)) {
-                System.out.println(oriFile.getName()+" renamed to " + newFile.getName());
-            } else {
-                System.out.println("Failed to rename "+oriFile.getName());
-            }
-            if (outFile.renameTo(newOutFile)) {
-                System.out.println(outFile.getName()+" renamed to " + newOutFile.getName());
-            } else {
-                System.out.println("Failed to rename "+outFile.getName());
-            }
-        });
-
-
+        if (!oriFile.renameTo(newFile)) {
+            logger.warning("Failed to rename " + oriFile.getName());
+        }
+        if (!outFile.renameTo(newOutFile)) {
+            logger.warning("Failed to rename " + outFile.getName());
+        }
     }
 }

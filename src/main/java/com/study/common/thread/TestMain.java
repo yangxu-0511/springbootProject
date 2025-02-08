@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.study.common.utils.Sm4Util;
 import com.yq.busi.common.util.DateUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.easitline.common.utils.kit.RandomKit;
 
@@ -32,117 +33,134 @@ public class TestMain {
 
     public static void main(String[] args) throws Exception {
 
-        String offlineDay = "20240230";  // 输入日期
-        if (isValidDate(offlineDay)) {
-            System.out.println("日期有效");
-        } else {
-            System.out.println("日期无效");
+        String dateIdss = "20250122";
+        String fileName = "JS2-20250122-result.zip";
+        String endsWith = "-" + dateIdss + "-result.zip";
+        String entCode = "2";
+        String tariffProvinceCode = "";
+
+        String startWith = tariffProvinceCode + entCode + "-"; // 返回省份代码和企业代码的组合
+
+        if (!fileName.endsWith(endsWith) || !fileName.startsWith(startWith)) {
+            System.out.println("不满足===");
+        }else{
+            System.out.println("满足==");
         }
 
+        String feeName = " XX套餐(国内) (香港)   资费  ";
+        String formattedFeeName = formatFeeName(feeName);
+        System.out.println(formattedFeeName);  // 输出: XX套餐（国内）（香港）资费
 
-        String reportt = "SC1";
-        System.out.println("sss="+reportt.substring(reportt.length() - 1));
+        // 构建 List<JSONObject>
+        List<JSONObject> result = new ArrayList<>();
+        List<JSONObject> auditResult = new ArrayList<>();
 
-        List<String> allowedKeys = Arrays.asList("pageIndex", "pageSize", "orderNo");
+        // 模拟数据
+        String date = "2024-12-03";
+        int telecom = 42;
+        int mobile = 0;
+        int unicom = 216;
+        int broad = 0;
+        int allTotal = 258;
+        // 创建 JSON 对象
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("DATE_ID", date);
+        jsonObject.put("TELECOM", telecom);
+        jsonObject.put("MOBILE", mobile);
+        jsonObject.put("UNICOM", unicom);
+        jsonObject.put("BROAD", broad);
+        jsonObject.put("MAX_DATE", date);
+        jsonObject.put("MIN_DATE", date);
+        jsonObject.put("ALLTOTAL", allTotal);
 
+        System.out.println("dateId="+jsonObject.containsKey("date_id")+",DATE_ID="+jsonObject.containsKey("DATE_ID"));
 
-        System.out.println(String.format("%06d", 1));
-        String dataJ = "{\"pageIndex\":1,\"pageSize\":500,\"orderNo\":\"\",\"appealPhone\":\"\",\"queryTime\":[\"2024-08-28 18:00:00\",\"2024-08-28 18:10:59\"]}";
-        JSONObject dj =  JSONObject.parseObject(dataJ);
-        System.out.println("szie= "+dj.getJSONArray("queryTime").size());
+        // 创建 JSON 对象
+        JSONObject jsonObject2 = new JSONObject();
+        jsonObject2.put("DATE_ID", "平均(去重)");
+        jsonObject2.put("TELECOM", 42);
+        jsonObject2.put("MOBILE", 0);
+        jsonObject2.put("UNICOM", 216);
+        jsonObject2.put("BROAD", 0);
+        jsonObject2.put("MAX_DATE", "2024-12-03");
+        jsonObject2.put("MIN_DATE", "2024-12-03");
+        jsonObject2.put("ALLTOTAL", 258);
+        // 添加到结果列表
+        result.add(jsonObject);
+        result.add(jsonObject2);
 
-        for (String key : dj.keySet()) {
-            if (!allowedKeys.contains(key)) {
-                System.out.println("Invalid key found: " + key);
+        JSONObject jsonObject3 = new JSONObject();
+        jsonObject3.put("ENT", 1);
+        jsonObject3.put("TARIFF_AUDIT_DATE", "20241203");
+
+        JSONObject jsonObject4 = new JSONObject();
+        jsonObject4.put("ENT", 2);
+        jsonObject4.put("TARIFF_AUDIT_DATE", "20241203");
+
+        JSONObject jsonObject5 = new JSONObject();
+        jsonObject5.put("ENT", 3);
+        jsonObject5.put("TARIFF_AUDIT_DATE", "20241203");
+        auditResult.add(jsonObject3);
+        auditResult.add(jsonObject4);
+        auditResult.add(jsonObject5);
+
+        for (JSONObject obj : result) {
+            if (obj == null) continue;
+            // 批量处理所有字段
+            String[] fields = {"MOBILE", "UNICOM", "TELECOM", "BROAD", "ALLTOTAL"};
+            for (String field : fields) {
+                Integer value = obj.getInteger(field);
+                obj.put(field, (value == null || value == 0) ? "" : value);
             }
         }
 
+        // 预处理 auditResult 数据,构建查找Map
+        Map<String, Map<String, String>> auditMap = new HashMap<>();
+        for (JSONObject audit : auditResult) {
+            String auditDate = audit.getString("TARIFF_AUDIT_DATE");
+            String ent = audit.getString("ENT");
+            auditMap.computeIfAbsent(auditDate, k -> new HashMap<>()).put(ent, "0");
+        }
 
-        DateTimeFormatter ff = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String currentDateString = LocalDateTime.now().format(ff);
-        System.out.println(currentDateString);  // 用于调试
+        // 使用Map优化查找和更新
+        for (JSONObject resultItem : result) {
+            String dateId = resultItem.getString("DATE_ID");
+            if ("平均(去重)".equals(dateId)) {
+                continue;
+            }
 
+            String maxDate = resultItem.getString("MAX_DATE");
+            if (StringUtils.isBlank(maxDate)) {
+                continue;
+            }
 
-        String versionNum = null;
-        versionNum = Optional.ofNullable(versionNum)
-                .filter(StringUtils::isNotBlank)
-                .map(version -> {
-                    String versionSuffix = version.substring(version.lastIndexOf("V") + 1);
-                    int newVersion = Integer.parseInt(versionSuffix) + 1;
-                    return String.format("V%d",  newVersion);
-                })
-                .orElseGet(() -> String.format("V1"));
-        System.out.println("版本号是: " + versionNum);
+            String formattedMaxDate = maxDate.replaceAll("-", "");
+            Map<String, String> entMap = auditMap.get(formattedMaxDate);
 
-        double hsyzl = 494.8;
-        int tmp = (int)Math.round(hsyzl);
-        System.out.println("hsyzl="+tmp);
+            if (entMap != null) {
+                // 使用Map直接映射字段名
+                Map<String, String> fieldMap = new HashMap<>();
+                fieldMap.put("1", "TELECOM");
+                fieldMap.put("2", "MOBILE");
+                fieldMap.put("3", "UNICOM");
+                fieldMap.put("5", "BROAD");
 
+                // 批量更新字段
+                entMap.forEach((ent, value) -> {
+                    String field = fieldMap.get(ent);
+                    if (field != null && "".equals(resultItem.getString(field))) {
+                        resultItem.put(field, 0);
+                    }
+                });
+            }
+        }
 
-        String sysReporter = "JT005012,JT00503,JT00502";
-        String reporters = "JT00501";
-        boolean ifExist = Arrays.stream(sysReporter.split(","))
-                .anyMatch(element -> element.equals(reporters));
-
-        boolean ifExist2 = Arrays.stream(sysReporter.split(","))
-                .collect(Collectors.toList()).contains(reporters);
-        System.out.println("==="+ifExist);
-        System.out.println("===2"+ifExist2);
-
-
-        String type = "99010401";
-
-        // 获取字符串的最后一位数字
-        String lastDigit = type.substring(type.length() - 1);
-
-        System.out.println("最后一位数字是: " + lastDigit);
-
-        String[] arr1 = new String[]{"3","4","5"};
-        System.out.println(arr1[0]);
-        System.out.println(arr1[2]);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime currentTime = LocalDateTime.now();
-        LocalDateTime newTime = currentTime.plusMinutes(15);
-        System.out.println(newTime.format(formatter));
-
-        // 使用 DateTimeFormatter 解析日期字符串
-
-        String yesNum = "02,12,13,17,26,32 11";
-        String y_redNum = yesNum.split("\\s")[0];
-        String y_blueNum = yesNum.split("\\s")[1];
-        //获取昨天的号码红蓝球
-        List<Integer> y_redArr  = Arrays.stream(y_redNum.split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
-        y_redArr.forEach(System.out::println);
-
-        List<Integer> y_blueArr  = Arrays.stream(y_blueNum.split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
-
-        y_blueArr.forEach(System.out::println);
-
+        for(JSONObject obj : result){
+            System.out.println(obj.toJSONString());
+        }
 
     }
 
-    public static  List<String> generateMonthList(String startDate, String endDate) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
-        List<String> months = new ArrayList<>();
-        Calendar start = Calendar.getInstance();
-        start.setTime(dateFormat.parse(startDate));
-        Calendar end = Calendar.getInstance();
-        end.setTime(dateFormat.parse(endDate));
-
-        while (!start.after(end)) {
-            months.add(dateFormat.format(start.getTime()));
-            start.add(Calendar.MONTH, 1);
-        }
-        for (int i = 0; i < months.size(); i++){
-            System.out.println("月份："+months.get(i));
-        }
-        return months;
-    }
 
     public static boolean isValidDate(String dateStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -153,6 +171,16 @@ public class TestMain {
         } catch (ParseException e) {
             return false;  // 如果抛出异常，说明日期无效
         }
+    }
+
+    public static String formatFeeName(String feeName) {
+        // 将英文括号替换为中文括号
+        String formattedName = feeName.replace("(", "（").replace(")", "）");
+
+        // 去掉所有空格（包括中间空格和首尾空格）
+        formattedName = formattedName.replaceAll("\\s+", "");
+
+        return formattedName;
     }
 
 }

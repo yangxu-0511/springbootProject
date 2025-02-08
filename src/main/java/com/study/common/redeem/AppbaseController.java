@@ -11,11 +11,11 @@ public class AppbaseController {
         //获取号码
 //		action("2","fc");
 //		自动兑奖
-		action("3");
+//		action("3");
         //指定日期兑奖=T-1 如果日期是周六=T-2
-//		action("3","2024-12-07");
+		action("3","2025-02-06");
         //写入号码 购买日期默认为昨天的日期 1当天 2昨天
-//		action("4","03,12,13,16,20,28 13","2");
+//		action("4","02,13,15,17,26,32 04","2");
         //把json文件排序
 //      action("5");
 
@@ -43,7 +43,7 @@ public class AppbaseController {
                 } else DreamNumer.getDreamNum();
                 break;
             case "3": //兑奖
-                ReedomNum.redeem(params);
+                RedeemNum.redeem(params);
                 break;
             case "4": //写入号码
                 WriteNum.writeMyNumber(params, Integer.parseInt(params2));
