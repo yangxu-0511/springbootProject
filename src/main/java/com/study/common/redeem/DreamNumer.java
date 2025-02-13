@@ -413,8 +413,8 @@ public class DreamNumer extends AppBaseNum {
 			int blueMatch = (int) blueList.stream().filter(historyBlue::contains).count();
 
 			// 如果相似度较高，添加到结果中
-			if (redMatch >= 3 || (redMatch >= 2 && blueMatch >= 1)) {
-				result.put("红球相同" + redMatch + "个" + (blueMatch > 0 ? ",蓝球相同" + blueMatch + "个" : ""), 
+			if (redMatch + blueMatch >= Constants.similarSize) {
+				result.put("总共" + (redMatch + blueMatch) + "个相同号码, 红球相同" + redMatch + "个" + (blueMatch > 0 ? ",蓝球相同" + blueMatch + "个" : ""),
 						  formatHistoryNumbers(historyRed, historyBlue));
 			}
 		}
@@ -466,7 +466,7 @@ public class DreamNumer extends AppBaseNum {
 			int blueMatch = (int) blueList.stream().filter(openBlue::contains).count();
 
 			// 输出匹配结果
-			System.out.println("最新开奖号码: " + formatHistoryNumbers(openRed, openBlue));
+			System.out.println("上一期开奖号码: " + formatHistoryNumbers(openRed, openBlue));
 			System.out.println("红球匹配: " + redMatch + "个");
 			System.out.println("蓝球匹配: " + blueMatch + "个");
 		}
